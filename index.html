@@ -418,12 +418,22 @@ async function gemini(prompt) {
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({contents:[{role:'user',parts:[{text:prompt}]}],generationConfig:{temperature:0.7,maxOutputTokens:1024}})
     });
+    
+    // Asli dushman ko screen par laane wala code
+    if (!res.ok) {
+       let err = await res.text();
+       alert("NAYA ERROR PAKDA GAYA:\n" + err);
+       return "";
+    }
+
     var data = await res.json();
     return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
   } catch(e) { 
+    alert("CATCH WALA ERROR: " + e.message);
     return 'Maafi, dobara try karo!'; 
   }
 }
+
 
 // ===== STATE =====
 var currentUser = null;
