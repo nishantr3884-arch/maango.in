@@ -64,12 +64,10 @@ nav{background:var(--green);padding:14px 16px;display:flex;align-items:center;ju
 .nav-item.active{color:var(--green)}
 .nav-item svg{width:24px;height:24px}
 
-/* Footer & Legal */
 .site-footer{text-align:center;padding:24px 16px 100px;color:var(--gray);font-size:12px}
 .footer-links{display:flex;justify-content:center;gap:16px;margin-bottom:12px}
 .footer-links span{cursor:pointer;font-weight:600;text-decoration:underline}
 
-/* Modals Fixed Layout */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;align-items:flex-end;backdrop-filter:blur(2px)}
 .modal-overlay.show{display:flex}
 .modal{background:#fff;border-radius:24px 24px 0 0;padding:24px 20px 40px;width:100%;max-height:90vh;overflow-y:auto;animation:slideUp .3s ease; display:flex; flex-direction:column; gap:12px; position:relative;}
@@ -84,13 +82,11 @@ nav{background:var(--green);padding:14px 16px;display:flex;align-items:center;ju
 .link-text{text-align:center;font-size:13px;color:#666;margin-top:4px}
 .link-text span{color:var(--green);font-weight:800;cursor:pointer;text-decoration:underline}
 
-/* Vertical Type Buttons */
 .type-btns{display:flex; flex-direction:column; gap:12px;}
 .type-btn{width:100%;padding:14px;border:2px solid var(--border);border-radius:14px;background:var(--bg);cursor:pointer;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:12px;transition:all 0.2s}
 .type-btn.selected{border-color:var(--green);background:#e8f5ee;color:var(--green)}
 .type-btn div{font-size:24px;}
 
-/* Auth Tabs */
 .auth-tabs{display:flex;background:var(--bg);border-radius:12px;padding:4px;margin-bottom:8px}
 .auth-tab{flex:1;text-align:center;padding:10px;font-size:13px;font-weight:700;border-radius:8px;cursor:pointer;color:var(--gray)}
 .auth-tab.active{background:#fff;color:var(--green);box-shadow:0 2px 8px rgba(0,0,0,0.05)}
@@ -98,7 +94,6 @@ nav{background:var(--green);padding:14px 16px;display:flex;align-items:center;ju
 .page{display:none}.page.active{display:block}
 .toast{position:fixed;top:80px;left:50%;transform:translateX(-50%);background:var(--text);color:#fff;padding:12px 24px;border-radius:24px;font-size:13px;font-weight:600;z-index:999;display:none;box-shadow:0 8px 30px rgba(0,0,0,.3);white-space:nowrap}
 
-/* Profile Elements */
 .profile-header{background:linear-gradient(135deg,var(--green),#1a5c35);padding:24px 20px;border-radius:20px;color:#fff;margin-bottom:16px;display:flex;align-items:center;gap:16px;box-shadow:0 8px 20px rgba(15,61,32,0.2)}
 .profile-avatar{width:64px;height:64px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;color:var(--green);flex-shrink:0}
 .verify-badge{background:rgba(255,255,255,0.2);color:#fff;font-size:11px;font-weight:700;padding:4px 10px;border-radius:12px;display:inline-flex;align-items:center;gap:4px;backdrop-filter:blur(4px)}
@@ -107,7 +102,6 @@ nav{background:var(--green);padding:14px 16px;display:flex;align-items:center;ju
 .profile-item{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:16px;cursor:pointer;font-size:14px;font-weight:700}
 .profile-item:last-child{border-bottom:none}
 
-/* AI Elements */
 .ai-fab{position:fixed;bottom:90px;right:16px;width:56px;height:56px;background:linear-gradient(135deg,var(--green),var(--green2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer;box-shadow:0 8px 25px rgba(27,140,62,0.4);z-index:150;border:none}
 .ai-box{display:none;position:fixed;bottom:160px;right:16px;width:340px;max-width:calc(100vw - 32px);background:#fff;border-radius:24px;box-shadow:0 12px 40px rgba(0,0,0,.2);z-index:150;flex-direction:column;border:1px solid var(--border);max-height:60vh;overflow:hidden}
 .ai-box.show{display:flex}
@@ -123,7 +117,6 @@ nav{background:var(--green);padding:14px 16px;display:flex;align-items:center;ju
 .ai-send{background:var(--green);color:#fff;border:none;width:40px;height:40px;border-radius:50%;font-size:16px;cursor:pointer;flex-shrink:0}
 .voice-btn{background:var(--bg);color:var(--green);border:1px solid var(--border);padding:6px 12px;border-radius:12px;font-size:11px;font-weight:800;cursor:pointer;margin-top:8px;display:inline-flex;align-items:center;gap:6px}
 
-/* Full Chat */
 .full-chat{display:none;position:fixed;inset:0;background:#fff;z-index:300;flex-direction:column}
 .full-chat.show{display:flex}
 .chat-nav{background:var(--green);padding:14px 16px;display:flex;align-items:center;gap:12px}
@@ -166,6 +159,8 @@ nav{background:var(--green);padding:14px 16px;display:flex;align-items:center;ju
   <div class="tab active" onclick="switchTab(this);showPage('home')">📱 Feed</div>
   <div class="tab" onclick="switchTab(this);showPage('knowledge')">📚 Learn</div>
   <div class="tab" onclick="switchTab(this);showPage('expert')">👨‍🌾 Experts</div>
+  <div class="tab" onclick="switchTab(this);showPage('farmerDir')">🌾 Farmers</div>
+  <div class="tab" onclick="switchTab(this);showPage('buyerDir')">🛒 Buyers</div>
   <div class="tab" onclick="switchTab(this);showPage('chat')">💬 Chats</div>
 </div>
 
@@ -202,6 +197,22 @@ nav{background:var(--green);padding:14px 16px;display:flex;align-items:center;ju
     <div class="feed-header"><div class="feed-title">👨‍🏫 Verified Experts</div></div>
     <p style="font-size:13px;color:var(--gray);margin-bottom:16px">Consult with agricultural scientists and verified professionals.</p>
     <div id="expertList"></div>
+  </div>
+</div>
+
+<div class="page" id="farmerDirPage">
+  <div class="feed">
+    <div class="feed-header"><div class="feed-title">🌾 Verified Farmers</div></div>
+    <p style="font-size:13px;color:var(--gray);margin-bottom:16px">Connect directly with crop growers across India.</p>
+    <div id="farmerList"></div>
+  </div>
+</div>
+
+<div class="page" id="buyerDirPage">
+  <div class="feed">
+    <div class="feed-header"><div class="feed-title">🛒 Verified Buyers</div></div>
+    <p style="font-size:13px;color:var(--gray);margin-bottom:16px">Find businesses and wholesale buyers easily.</p>
+    <div id="buyerList"></div>
   </div>
 </div>
 
@@ -423,8 +434,8 @@ var allListings = [];
 var dynCats = new Set(['all']);
 
 // Auth State Vars
-var authMode = 'login'; // 'login' or 'signup'
-var authMethod = 'email'; // 'email' or 'phone'
+var authMode = 'login'; 
+var authMethod = 'email'; 
 var selectedType = 'buyer';
 var phoneConfirmationResult = null;
 
@@ -502,7 +513,6 @@ function processAuth() {
   var phone = document.getElementById('authPhone').value.trim();
   var otp = document.getElementById('authOtp').value.trim();
 
-  // Mode: Signup Validation
   if (authMode === 'signup') {
     if(!name || !city) { showToast('⚠️ Name and City are required for Signup.'); return; }
   }
@@ -510,7 +520,6 @@ function processAuth() {
   btn.innerHTML = '<span class="spinner"></span> Processing...';
   btn.disabled = true;
 
-  // Flow 1: Email Auth
   if (authMethod === 'email') {
     if (!email || !pass) { showToast('⚠️ Email and Password required.'); resetBtn(); return; }
     
@@ -527,18 +536,15 @@ function processAuth() {
         closeModal('authModal');
         showToast('✅ Account Created! Please verify your email.');
       }).catch(function(e){ showToast('❌ ' + e.message); }).finally(resetBtn);
-    } else { // Login
+    } else { 
       auth.signInWithEmailAndPassword(email, pass).then(function(){
         closeModal('authModal'); showToast('✅ Login Secure!');
       }).catch(function(e){ showToast('❌ Invalid Credentials'); }).finally(resetBtn);
     }
   } 
-  
-  // Flow 2: Phone Auth
   else if (authMethod === 'phone') {
     if (!phone) { showToast('⚠️ Enter Phone number with code (e.g. +91...)'); resetBtn(); return; }
     
-    // Send OTP
     if (!phoneConfirmationResult) {
       auth.signInWithPhoneNumber(phone, window.recaptchaVerifier)
       .then(function (confirmationResult) {
@@ -552,9 +558,7 @@ function processAuth() {
         window.recaptchaVerifier.render().then(function(widgetId) { grecaptcha.reset(widgetId); });
         resetBtnState();
       });
-    } 
-    // Verify OTP
-    else {
+    } else {
       if(!otp) { showToast('⚠️ Enter OTP.'); resetBtn(); return; }
       phoneConfirmationResult.confirm(otp).then(function (result) {
         if(authMode === 'signup') {
@@ -572,10 +576,7 @@ function processAuth() {
     }
   }
 
-  function resetBtn() {
-    btn.innerHTML = authMode === 'login' ? 'Secure Login' : 'Create Account';
-    btn.disabled = false;
-  }
+  function resetBtn() { btn.innerHTML = authMode === 'login' ? 'Secure Login' : 'Create Account'; btn.disabled = false; }
   function resetBtnState() { btn.disabled = false; }
 }
 
@@ -599,18 +600,14 @@ function saveProfile() {
   var state=document.getElementById('userState').value;
   if(!govtIdType||!govtIdNumber||!state){showToast('⚠️ Required KYC fields missing!');return;}
   
-  // Storing data. In real prod, ID numbers should be encrypted via Cloud Functions.
   db.collection('users').doc(currentUser.uid).set({
-    govtIdType:govtIdType, govtIdNumber:govtIdNumber, state:state, // Basic collection
+    govtIdType:govtIdType, govtIdNumber:govtIdNumber, state:state,
     businessName:document.getElementById('businessName').value.trim(),
     govtIdVerified:true, profileComplete:true
   },{merge:true}).then(function(){
     return db.collection('users').doc(currentUser.uid).get();
   }).then(function(doc){
-    currentUserData=doc.data();
-    closeModal('profileModal');
-    showToast('🔐 Secure KYC Data Saved Successfully!');
-    renderProfile();
+    currentUserData=doc.data(); closeModal('profileModal'); showToast('🔐 Secure KYC Data Saved Successfully!'); renderProfile();
   }).catch(function(e){showToast('❌ Server Error');});
 }
 
@@ -625,7 +622,6 @@ function renderProfile() {
   var verified = currentUserData && currentUserData.govtIdVerified;
   var emailVerified = currentUser.emailVerified;
   var phoneVerified = !!currentUser.phoneNumber;
-  var pct = (verified ? 50 : 0) + (emailVerified || phoneVerified ? 50 : 0);
   
   pc.innerHTML='<div class="profile-header"><div class="profile-avatar">' + ((currentUserData&&currentUserData.name)||'U')[0].toUpperCase() + '</div>' +
   '<div><div style="font-size:18px;font-weight:800">' + ((currentUserData&&currentUserData.name)||'User') + '</div>' +
@@ -707,12 +703,10 @@ function renderCards(data) {
 }
 
 function translatePost(btn, text) {
-  var orig = btn.innerText;
-  btn.innerText = "⏳...";
+  var orig = btn.innerText; btn.innerText = "⏳...";
   gemini("Translate this to Hindi strictly (Devanagari). Only provide the translation: '" + text + "'").then(function(res){
     if(res && !res.includes("Quota limit")) {
-      btn.parentElement.parentElement.previousElementSibling.previousElementSibling.innerText = res;
-      btn.innerText = "✅ Done";
+      btn.parentElement.parentElement.previousElementSibling.previousElementSibling.innerText = res; btn.innerText = "✅ Done";
     } else { btn.innerText = orig; showToast("⚠️ Translation limit reached."); }
   });
 }
@@ -725,159 +719,10 @@ function showPage(page) {
   if(document.getElementById('nav'+page.charAt(0).toUpperCase()+page.slice(1))) document.getElementById('nav'+page.charAt(0).toUpperCase()+page.slice(1)).classList.add('active');
   if(page==='chat') loadChats();
   if(page==='profile') renderProfile();
-  if(page==='expert') renderExperts();
+  if(page==='expert') renderDirectory('expert', 'expertList', '👨‍🏫', 'Verified Expert');
+  if(page==='farmerDir') renderDirectory('farmer', 'farmerList', '🌾', 'Verified Farmer');
+  if(page==='buyerDir') renderDirectory('buyer', 'buyerList', '🛒', 'Verified Buyer');
   window.scrollTo(0,0);
 }
 function switchTab(el) { document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');}); el.classList.add('active'); }
-function filterCat(el, cat) { document.querySelectorAll('.chip').forEach(function(c){c.classList.remove('active');}); el.classList.add('active'); renderCards(cat==='all' ? allListings : allListings.filter(function(l){return l.category===cat;})); }
-function filterCards() { var q = document.getElementById('searchInput').value.toLowerCase(); renderCards(q ? allListings.filter(function(l){ return (l.product||'').toLowerCase().includes(q)||(l.location||'').toLowerCase().includes(q); }) : allListings); }
-
-// Legal Pages
-function openLegal(type) {
-  document.getElementById('legalModal').classList.add('show');
-  var title = document.getElementById('legalTitle');
-  var body = document.getElementById('legalBody');
-  if(type === 'help') {
-    title.textContent = "Help Center";
-    body.innerHTML = "<strong>How to use Maango?</strong><br>1. Register via Email or Phone.<br>2. Complete KYC for security.<br>3. Search demands or post your own.<br><br><strong>Facing issues?</strong> Email us at support@maango.in";
-  } else if(type === 'contact') {
-    title.textContent = "Contact Us";
-    body.innerHTML = "<strong>Headquarters:</strong> Aligarh, Uttar Pradesh<br><strong>Email:</strong> support@maango.in<br><strong>Phone:</strong> +91-XXXXX-XXXXX (Available 9 AM - 6 PM)";
-  } else {
-    title.textContent = "Privacy & Terms";
-    body.innerHTML = "Maango values your privacy. All documents provided during KYC are encrypted and securely stored. We do not share your personal identification with third parties without consent. User safety is our top priority.";
-  }
-}
-
-// ===== 9. AI CHAT (AUTO LANG) =====
-function toggleAI(){document.getElementById('aiBox').classList.toggle('show');}
-function askAI(override) {
-  var input = document.getElementById('aiInput');
-  var msg = override || input.value.trim();
-  if(!msg) return; input.value = '';
-  var msgs = document.getElementById('aiMsgs');
-  msgs.insertAdjacentHTML('beforeend', '<div class="ai-m usr">' + msg + '</div>');
-  var tid = 't' + Date.now();
-  msgs.insertAdjacentHTML('beforeend', '<div id="' + tid + '" class="ai-m bot"><div class="ai-typing"><span></span><span></span><span></span></div></div>');
-  msgs.scrollTop = msgs.scrollHeight;
-  var sysPrompt = 'You are Maango AI — friendly farming assistant. STRICT RULE: Detect the language of the user\'s message and reply in the EXACT SAME language. If Hinglish, reply in Hinglish. Keep answers short (3-5 lines).';
-  gemini(sysPrompt + '\n\nUser: ' + msg).then(function(reply){
-    var el = document.getElementById(tid);
-    if(el) {
-       var displayHtml = (reply||'Error connecting.').replace(/\n/g,'<br>');
-       var safeText = displayHtml.replace(/(<([^>]+)>)/gi, "").replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-       el.outerHTML = '<div class="ai-m bot">' + displayHtml + '<br><button class="voice-btn" data-text="' + safeText + '" onclick="speakAnswer(this)">🔊 Listen</button></div>';
-    }
-    msgs.scrollTop = msgs.scrollHeight;
-  });
-}
-
-// Voice API
-function startVoiceTyping(inputId) {
-    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) { showToast("⚠️ Voice not supported."); return; }
-    var recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-    recognition.lang = 'hi-IN';
-    var inputField = document.getElementById(inputId);
-    var oldPlaceholder = inputField.placeholder;
-    inputField.placeholder = "Listening... 🎤"; inputField.value = ""; 
-    recognition.start();
-    recognition.onresult = function(event) { inputField.value = event.results[0][0].transcript; inputField.placeholder = oldPlaceholder; };
-    recognition.onerror = function() { inputField.placeholder = oldPlaceholder; showToast("❌ Voice error."); };
-    recognition.onend = function() { inputField.placeholder = oldPlaceholder; };
-}
-function speakAnswer(btnElement) {
-    if (!('speechSynthesis' in window)) return; window.speechSynthesis.cancel();
-    var msg = new SpeechSynthesisUtterance();
-    msg.text = btnElement.getAttribute('data-text'); msg.lang = 'hi-IN'; msg.rate = 0.95; 
-    window.speechSynthesis.speak(msg); showToast("🔊 Playing audio...");
-}
-
-// Knowledge Base
-function searchCrop() {
-  var query=document.getElementById('kbInput').value.trim();
-  if(!query){showToast('⚠️ Enter crop name!');return;}
-  var container=document.getElementById('kbResults');
-  container.innerHTML='<div class="empty-state"><span class="spinner" style="border-top-color:var(--green)"></span><p>Fetching data...</p></div>';
-  gemini('Give brief farming guide for "' + query + '". Return JSON: {"crop":"name","emoji":"emoji","season":"season","duration":"days","soil":"soil type","profit":"profit/acre","tips":"important tips"}').then(function(result){
-    try {
-      var d = JSON.parse(result.replace(/```(json)?/gi, '').replace(/```/g, '').trim());
-      container.innerHTML='<div class="card">' +
-      '<div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">' +
-      '<div style="width:50px;height:50px;border-radius:12px;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;">' + (d.emoji||'🌱') + '</div>' +
-      '<div><div style="font-weight:800;font-size:18px;">' + (d.crop||query) + '</div><div style="font-size:12px;color:var(--gray)">⏱️ ' + (d.duration||'Varies') + '</div></div></div>' +
-      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">' +
-      '<div style="background:var(--bg);border-radius:12px;padding:12px;font-size:12px"><strong>🗓️ Season</strong><br>' + (d.season||'All') + '</div>' +
-      '<div style="background:var(--bg);border-radius:12px;padding:12px;font-size:12px"><strong>🌍 Soil</strong><br>' + (d.soil||'Any') + '</div>' +
-      '<div style="background:#e8f5ee;border-radius:12px;padding:12px;font-size:12px;grid-column:1/-1;color:var(--green)"><strong>💡 Tip:</strong> ' + (d.tips||'Consult experts for details.') + '</div></div></div>';
-    } catch(e) { container.innerHTML='<div class="card"><p>Failed to parse data. Try asking AI Chat directly.</p></div>'; }
-  });
-}
-
-// User Chats
-function startChat(lId, sId, sName, prod) {
-  if(!currentUser){showToast('⚠️ Login Required'); document.getElementById('authModal').classList.add('show'); return;}
-  if(!currentUserData||!currentUserData.govtIdVerified){showToast('⚠️ KYC Required'); openProfileModal(); return;}
-  if(sId===currentUser.uid){showToast('⚠️ This is your own listing.');return;}
-  currentChatId=[currentUser.uid,sId].sort().join('_')+'_'+lId;
-  db.collection('chats').doc(currentChatId).set({ participants:[currentUser.uid,sId], listingId:lId, product:prod, buyerName:currentUserData.name, sellerName:sName, updatedAt:firebase.firestore.FieldValue.serverTimestamp() },{merge:true});
-  document.getElementById('chatNavName').textContent=sName; document.getElementById('chatNavAvatar').textContent=sName[0].toUpperCase();
-  document.getElementById('chatBody').innerHTML=''; listenMsgs(currentChatId); document.getElementById('fullChat').classList.add('show');
-}
-function listenMsgs(cId) {
-  db.collection('chats').doc(cId).collection('messages').orderBy('createdAt').onSnapshot(function(snap){
-    var body=document.getElementById('chatBody'); var html='';
-    snap.docs.forEach(function(d){
-      var m=d.data(); var sent=m.senderId===(currentUser&&currentUser.uid);
-      var time = (m.createdAt && typeof m.createdAt.toDate === 'function') ? new Date(m.createdAt.toDate()).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}) : 'Now';
-      html+='<div class="msg ' + (sent?'sent':'received') + '">' + m.text + '<div class="msg-time">' + time + '</div></div>';
-    });
-    body.innerHTML=html; body.scrollTop=body.scrollHeight;
-  });
-}
-function sendMsg() {
-  var i=document.getElementById('chatInputFull'); var t=i.value.trim(); if(!t||!currentChatId)return; i.value='';
-  db.collection('chats').doc(currentChatId).collection('messages').add({ text:t, senderId:currentUser.uid, senderName:currentUserData.name||'User', createdAt:firebase.firestore.FieldValue.serverTimestamp() });
-  db.collection('chats').doc(currentChatId).set({updatedAt:firebase.firestore.FieldValue.serverTimestamp(),lastMsg:t},{merge:true});
-}
-function closeFullChat(){document.getElementById('fullChat').classList.remove('show');}
-function loadChats() {
-  if(!currentUser){document.getElementById('chatListContainer').innerHTML='<div class="empty-state"><div>🔒</div><p>Login to view chats.</p></div>';return;}
-  db.collection('chats').where('participants','array-contains',currentUser.uid).onSnapshot(function(snap){
-    var c=document.getElementById('chatListContainer'); if(snap.empty){c.innerHTML='<div class="empty-state"><div>💬</div><p>No active conversations.</p></div>';return;}
-    var docs = snap.docs.map(function(d) { return Object.assign({id: d.id}, d.data()); });
-    docs.sort(function(a,b){ var tA=(a.updatedAt&&typeof a.updatedAt.toMillis==='function')?a.updatedAt.toMillis():0; var tB=(b.updatedAt&&typeof b.updatedAt.toMillis==='function')?b.updatedAt.toMillis():0; return tB-tA; });
-    var html=''; docs.forEach(function(chat){
-      var other=chat.participants[0]===currentUser.uid?chat.sellerName:chat.buyerName;
-      html+='<div class="card" style="display:flex;align-items:center;gap:12px;cursor:pointer;padding:12px;margin-bottom:10px" onclick="startChat(\''+chat.listingId+'\',\''+(chat.participants.find(p=>p!==currentUser.uid))+'\',\''+other+'\',\''+chat.product+'\')">' +
-      '<div class="avatar" style="width:46px;height:46px">' + (other||'U')[0].toUpperCase() + '</div>' +
-      '<div style="flex:1"><div style="font-weight:800;font-size:15px">' + (other||'User') + '</div>' +
-      '<div style="font-size:12px;color:var(--gray);margin-top:2px">📦 ' + (chat.product||'') + '</div>' +
-      '<div style="font-size:13px;margin-top:4px;color:var(--text)">' + (chat.lastMsg||'Start chatting') + '</div></div></div>';
-    }); c.innerHTML=html;
-  });
-}
-
-// Experts
-function renderExperts() {
-  var c = document.getElementById('expertList'); c.innerHTML = '<div class="empty-state"><span class="spinner" style="border-top-color:var(--green)"></span><p>Loading Verified Experts...</p></div>';
-  db.collection('users').where('userType', '==', 'expert').onSnapshot(function(snap) {
-    if (snap.empty) { c.innerHTML = '<div class="empty-state"><div>👨‍🏫</div><p>No experts registered yet.</p></div>'; return; }
-    var html = ''; snap.docs.forEach(function(doc) {
-      var ex = doc.data(); var expertId = doc.id; var name = (ex.name || 'Agri Expert').replace(/'/g, "\\'"); var city = (ex.city || 'India');
-      html += '<div class="card" style="display:flex;align-items:center;gap:16px;padding:16px;margin-bottom:12px">' +
-        '<div class="avatar" style="width:52px;height:52px;font-size:22px">' + name.charAt(0).toUpperCase() + '</div>' +
-        '<div style="flex:1"><div style="font-weight:800;font-size:16px">' + name + ' <span style="font-size:12px">☑️</span></div>' +
-        '<div style="font-size:12px;color:var(--gray);margin-bottom:4px">Verified Consultant</div>' +
-        '<div style="font-size:11px;color:var(--gray);background:var(--bg);padding:4px 8px;border-radius:6px;display:inline-block">📍 ' + city + '</div></div>' +
-        '<button class="chat-btn" onclick="startChat(\'expert_consult_' + expertId + '\', \'' + expertId + '\', \'' + name + '\', \'Expert Consultation\')">Consult</button></div>';
-    }); c.innerHTML = html;
-  }, function(error) { c.innerHTML = '<div class="empty-state"><p>Secure network error.</p></div>'; });
-}
-
-// Modals close on outside click
-document.querySelectorAll('.modal-overlay').forEach(function(o){
-  o.addEventListener('click',function(e){if(e.target===this)this.classList.remove('show');});
-});
-</script>
-</body>
-</html>
+function filterCat(el, cat) { document.querySelectorAll('.chip').forEach(function(c){c.classList.remove('active');}); el.classList.add('active'); renderCards(
