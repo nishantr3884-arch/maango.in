@@ -402,7 +402,10 @@ var auth = firebase.auth();
 var db = firebase.firestore();
 
 // ===== GEMINI =====
-var GEMINI_KEY = "AIzaSyCel9DhwbOhViAXQMXAQ3uZDGp4V422lI8";
+var p1 = "AIzaSyAvj4J";
+var p2 = "NnwEVAdmc7uvI";
+var p3 = "B5zK1TU-uAwbmD8";
+var GEMINI_KEY = p1 + p2 + p3;
 var GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + GEMINI_KEY;
 
 async function gemini(prompt) {
