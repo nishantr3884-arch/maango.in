@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maango — Demand First Marketplace</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Hind:wght@400;500;600&display=swap" rel="stylesheet">
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
+<style>
+:root{--green:#0F3D20;--green2:#1B8C3E;--gold:#FFB300;--bg:#F5F0E8;--white:#fff;--gray:#888;--text:#1A1A1A;--border:#E8E0D0}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Hind',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+nav{background:var(--green);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(0,0,0,.3)}
+.logo{font-family:'Playfair Display',serif;font-size:24px;font-weight:900;color:#fff}.logo span{color:var(--gold)}
+.nav-right{display:flex;align-items:center;gap:8px}
+.lang-select{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;padding:5px 8px;border-radius:8px;font-size:11px;cursor:pointer;outline:none;max-width:120px}
+.lang-select option{background:#1a1a1a;color:#fff}
+.btn-nav{background:var(--gold);border:none;color:var(--green);padding:7px 14px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer}
+.search-section{background:linear-gradient(135deg,var(--green) 0%,#1a5c35 100%);padding:20px 16px 18px;text-align:center}
+.search-section h2{font-family:'Playfair Display',serif;color:#fff;font-size:18px;margin-bottom:4px}
+.search-section p{color:rgba(255,255,255,.7);font-size:12px;margin-bottom:12px}
+.search-bar{display:flex;background:#fff;border-radius:30px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.2)}
+.search-bar input{flex:1;padding:12px 16px;border:none;outline:none;font-size:14px}
+.search-bar button{background:var(--gold);border:none;padding:12px 18px;color:var(--green);font-weight:700;font-size:13px;cursor:pointer}
+.tabs{display:flex;background:#fff;border-bottom:2px solid var(--border);overflow-x:auto;scrollbar-width:none}
+.tab{padding:12px 16px;font-size:12px;font-weight:600;color:var(--gray);cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;transition:all .2s}
+.tab.active{color:var(--green);border-bottom-color:var(--green)}
+.section{padding:14px 16px 6px}
+.section-title{font-size:14px;font-weight:700;color:var(--green);margin-bottom:10px}
+.categories{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:6px}
+.chip{background:#fff;border:1.5px solid var(--border);border-radius:20px;padding:7px 14px;font-size:12px;font-weight:600;white-space:nowrap;cursor:pointer;transition:all .2s}
+.chip:hover,.chip.active{background:var(--green);color:#fff;border-color:var(--green)}
+.feed{padding:8px 16px 100px}
+.feed-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.feed-title{font-size:14px;font-weight:700;color:var(--green)}
+.post-btn{background:var(--gold);color:var(--green);border:none;padding:8px 14px;border-radius:20px;font-weight:700;font-size:12px;cursor:pointer}
+.card{background:#fff;border-radius:16px;padding:14px;margin-bottom:12px;box-shadow:0 2px 12px rgba(0,0,0,.06);border:1px solid var(--border);animation:fadeUp .4s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.buyer-info{display:flex;align-items:center;gap:8px}
+.avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--green2));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:15px;flex-shrink:0}
+.buyer-name{font-weight:700;font-size:13px}
+.buyer-type{font-size:10px;color:var(--green2);font-weight:600;background:#e8f5ee;padding:2px 6px;border-radius:8px;display:inline-block;margin-top:2px}
+.card-badge{background:#FFF3E0;color:#E65100;font-size:10px;font-weight:700;padding:3px 8px;border-radius:8px}
+.card-product{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;margin-bottom:5px}
+.card-desc{font-size:12px;color:#555;margin-bottom:10px;line-height:1.5}
+.card-details{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.dtag{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-size:11px;font-weight:600}
+.dtag span{color:var(--green)}
+.card-footer{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border);padding-top:10px}
+.card-time{font-size:10px;color:var(--gray)}
+.chat-btn{background:var(--green);color:#fff;border:none;padding:8px 16px;border-radius:16px;font-weight:700;font-size:12px;cursor:pointer}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--border);display:flex;justify-content:space-around;padding:8px 0 14px;box-shadow:0 -4px 20px rgba(0,0,0,.08);z-index:100}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;color:var(--gray);font-size:10px;font-weight:600}
+.nav-item.active{color:var(--green)}
+.nav-item svg{width:20px;height:20px}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;align-items:flex-end}
+.modal-overlay.show{display:flex}
+.modal{background:#fff;border-radius:24px 24px 0 0;padding:20px 18px 36px;width:100%;max-height:90vh;overflow-y:auto;animation:slideUp .3s ease}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-title{font-family:'Playfair Display',serif;font-size:19px;font-weight:700;margin-bottom:16px;color:var(--green)}
+.close-btn{float:right;background:none;border:none;font-size:20px;cursor:pointer;color:var(--gray)}
+.modal input,.modal select,.modal textarea{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;margin-bottom:10px;outline:none;color:var(--text);background:var(--bg);font-family:'Hind',sans-serif}
+.modal input:focus,.modal select:focus,.modal textarea:focus{border-color:var(--green);background:#fff}
+.modal textarea{height:75px;resize:none}
+.modal-submit{width:100%;background:var(--green);color:#fff;border:none;padding:14px;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;margin-top:4px}
+.modal-submit:disabled{opacity:.6;cursor:not-allowed}
+.form-label{font-size:12px;font-weight:600;color:var(--gray);margin-bottom:4px;display:block}
+.link-text{text-align:center;margin-top:12px;font-size:12px;color:#888}
+.link-text span{color:var(--green);font-weight:700;cursor:pointer}
+.type-btns{display:flex;gap:10px;margin-bottom:12px}
+.type-btn{flex:1;padding:12px;border:2px solid var(--border);border-radius:12px;background:var(--bg);cursor:pointer;text-align:center;font-size:12px;font-weight:600;transition:all .2s}
+.type-btn.selected{border-color:var(--green);background:#e8f5ee;color:var(--green)}
+.type-btn div{font-size:24px;margin-bottom:4px}
+.page{display:none}.page.active{display:block}
+.toast{position:fixed;top:70px;left:50%;transform:translateX(-50%);background:var(--green);color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:600;z-index:999;display:none;box-shadow:0 4px 20px rgba(0,0,0,.2);white-space:nowrap;max-width:90vw;text-align:center}
+.profile-header{background:linear-gradient(135deg,var(--green),#1a5c35);padding:20px 16px;border-radius:16px;color:#fff;margin-bottom:14px;display:flex;align-items:center;gap:14px}
+.profile-avatar{width:56px;height:56px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900;color:var(--green);flex-shrink:0}
+.profile-menu{background:#fff;border-radius:16px;overflow:hidden;border:1px solid var(--border)}
+.profile-item{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;cursor:pointer;font-size:13px;font-weight:600}
+.profile-item:last-child{border-bottom:none}
+.logout-item{color:#e53935}
+.full-chat{display:none;position:fixed;inset:0;background:#fff;z-index:300;flex-direction:column}
+.full-chat.show{display:flex}
+.chat-nav{background:var(--green);padding:14px 16px;display:flex;align-items:center;gap:12px}
+.chat-back{background:none;border:none;color:#fff;font-size:20px;cursor:pointer}
+.chat-nav-name{color:#fff;font-weight:700;font-size:15px}
+.chat-nav-status{color:rgba(255,255,255,.7);font-size:11px}
+.chat-nav-avatar{width:36px;height:36px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;color:var(--green);font-weight:700;font-size:15px}
+.chat-body{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;background:var(--bg)}
+.msg{max-width:78%;padding:10px 13px;border-radius:16px;font-size:13px;line-height:1.5}
+.msg.received{background:#fff;border:1px solid var(--border);align-self:flex-start;border-bottom-left-radius:4px}
+.msg.sent{background:var(--green);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+.msg-time{font-size:10px;opacity:.6;margin-top:4px}
+.chat-input-area{padding:12px 14px;background:#fff;border-top:1px solid var(--border);display:flex;gap:10px;align-items:center}
+.chat-input-area input{flex:1;padding:11px 14px;border:1.5px solid var(--border);border-radius:24px;font-size:13px;outline:none}
+.send-btn{background:var(--green);color:#fff;border:none;width:42px;height:42px;border-radius:50%;font-size:16px;cursor:pointer;flex-shrink:0}
+.empty-state{text-align:center;padding:40px 20px;color:var(--gray)}
+.empty-state div{font-size:40px;margin-bottom:10px}
+.spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;display:inline-block;margin-right:6px;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
+.verify-badge{background:#e8f5ee;color:var(--green2);font-size:10px;font-weight:700;padding:2px 8px;border-radius:8px;margin-left:4px}
+.unverified-badge{background:#fff3e0;color:#e65100;font-size:10px;font-weight:700;padding:2px 8px;border-radius:8px;margin-left:4px}
+.bar-track{background:var(--border);border-radius:10px;height:8px;margin:8px 0 4px}
+.bar-fill{background:var(--gold);border-radius:10px;height:8px;transition:width .5s}
+.ai-fab{position:fixed;bottom:80px;right:16px;width:52px;height:52px;background:linear-gradient(135deg,var(--green),var(--green2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.3);z-index:150;border:none}
+.ai-box{display:none;position:fixed;bottom:145px;right:12px;width:310px;max-width:calc(100vw - 24px);background:#fff;border-radius:20px;box-shadow:0 8px 40px rgba(0,0,0,.2);z-index:150;flex-direction:column;border:1px solid var(--border);max-height:55vh}
+.ai-box.show{display:flex}
+.ai-head{background:var(--green);padding:12px 16px;border-radius:20px 20px 0 0;display:flex;align-items:center;justify-content:space-between}
+.ai-head-title{color:#fff;font-weight:700;font-size:14px}
+.ai-head-sub{color:rgba(255,255,255,.7);font-size:10px}
+.ai-close-btn{background:none;border:none;color:#fff;font-size:18px;cursor:pointer}
+.ai-msgs{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px}
+.ai-m{max-width:85%;padding:9px 12px;border-radius:14px;font-size:12px;line-height:1.5}
+.ai-m.bot{background:var(--bg);border:1px solid var(--border);align-self:flex-start;border-bottom-left-radius:4px}
+.ai-m.usr{background:var(--green);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+.ai-inp{padding:10px 12px;border-top:1px solid var(--border);display:flex;gap:8px}
+.ai-inp input{flex:1;padding:9px 12px;border:1.5px solid var(--border);border-radius:20px;font-size:12px;outline:none}
+.ai-send{background:var(--green);color:#fff;border:none;width:36px;height:36px;border-radius:50%;font-size:14px;cursor:pointer;flex-shrink:0}
+.ai-quick{display:flex;gap:6px;flex-wrap:wrap;padding:8px 12px 0}
+.ai-q{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:5px 10px;font-size:11px;cursor:pointer;font-weight:600;color:var(--green)}
+.ai-typing{display:flex;gap:4px;padding:4px 0}
+.ai-typing span{width:7px;height:7px;background:var(--gray);border-radius:50%;animation:blink .8s infinite}
+.ai-typing span:nth-child(2){animation-delay:.15s}
+.ai-typing span:nth-child(3){animation-delay:.3s}
+@keyframes blink{0%,100%{opacity:.3}50%{opacity:1}}
+.kb-search{display:flex;background:#fff;border:1.5px solid var(--border);border-radius:24px;overflow:hidden;margin-bottom:12px}
+.kb-search input{flex:1;padding:11px 16px;border:none;outline:none;font-size:13px}
+.kb-search button{background:var(--green);border:none;padding:11px 16px;color:#fff;font-size:13px;cursor:pointer}
+.kb-card{background:#fff;border-radius:16px;padding:14px;margin-bottom:12px;border:1px solid var(--border)}
+.expert-card{background:#fff;border-radius:14px;padding:12px 14px;margin-bottom:10px;border:1px solid var(--border);display:flex;align-items:center;gap:12px}
+.expert-av{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#ff9800);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.expert-btn{margin-left:auto;background:var(--green);color:#fff;border:none;padding:7px 12px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;flex-shrink:0}
+.chat-list-item{background:#fff;border-radius:12px;padding:12px;margin-bottom:10px;display:flex;align-items:center;gap:12px;cursor:pointer;border:1px solid var(--border)}
+.chat-list-av{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--green2));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;flex-shrink:0}
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<nav>
+  <div class="logo">maan<span>go</span></div>
+  <div class="nav-right">
+    <select class="lang-select" id="langSelect" onchange="changeLang(this.value)">
+      <option value="hinglish">🇮🇳 Hinglish</option>
+      <option value="hi">🇮🇳 हिंदी</option>
+      <option value="en">🇬🇧 English</option>
+      <option value="bn">🇧🇩 বাংলা</option>
+      <option value="pa">🇮🇳 ਪੰਜਾਬੀ</option>
+      <option value="gu">🇮🇳 ગુજરાતી</option>
+      <option value="mr">🇮🇳 मराठी</option>
+      <option value="ta">🇮🇳 தமிழ்</option>
+      <option value="te">🇮🇳 తెలుగు</option>
+      <option value="kn">🇮🇳 ಕನ್ನಡ</option>
+      <option value="ml">🇮🇳 മലയാളം</option>
+      <option value="ur">🇵🇰 اردو</option>
+      <option value="ar">🇸🇦 عربي</option>
+      <option value="fr">🇫🇷 Français</option>
+      <option value="de">🇩🇪 Deutsch</option>
+      <option value="zh">🇨🇳 中文</option>
+      <option value="es">🇪🇸 Español</option>
+      <option value="pt">🇧🇷 Português</option>
+      <option value="ru">🇷🇺 Русский</option>
+      <option value="ja">🇯🇵 日本語</option>
+      <option value="ko">🇰🇷 한국어</option>
+      <option value="tr">🇹🇷 Türkçe</option>
+      <option value="id">🇮🇩 Bahasa</option>
+      <option value="sw">🇰🇪 Swahili</option>
+      <option value="fa">🇮🇷 فارسی</option>
+      <option value="ne">🇳🇵 नेपाली</option>
+      <option value="si">🇱🇰 සිංහල</option>
+      <option value="or">🇮🇳 ଓଡ଼ିଆ</option>
+    </select>
+    <button class="btn-nav" id="navAuthBtn" onclick="handleNavBtn()">👤 Login</button>
+  </div>
+</nav>
+
+<div class="search-section">
+  <h2 id="searchTitleEl">Kya Kharidna Hai?</h2>
+  <p id="searchSubEl">Bulk mein — seedha farmer se</p>
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="Gehu, Aloe Vera, Makka..." oninput="filterCards()">
+    <button onclick="filterCards()">🔍 Khojo</button>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab(this);showPage('home')">📱 Feed</div>
+  <div class="tab" onclick="switchTab(this);showPage('knowledge')">📚 Seekho</div>
+  <div class="tab" onclick="switchTab(this);showPage('expert')">👨‍🌾 Expert</div>
+  <div class="tab" onclick="switchTab(this);showPage('chat')">💬 Chat</div>
+</div>
+
+<div class="page active" id="homePage">
+  <div class="section">
+    <div class="section-title">🔥 Hot Demands</div>
+    <div class="categories" id="catChips">
+      <div class="chip active" onclick="filterCat(this,'all')">🌟 Sab</div>
+    </div>
+  </div>
+  <div class="feed">
+    <div class="feed-header">
+      <div class="feed-title" id="feedTitleEl">📋 Buyer Demands</div>
+      <button class="post-btn" onclick="showPostModal()">+ Demand Daalo</button>
+    </div>
+    <div id="feedContainer"><div class="empty-state"><div>⏳</div><p>Load ho raha hai...</p></div></div>
+  </div>
+</div>
+
+<div class="page" id="knowledgePage">
+  <div class="feed">
+    <div class="feed-header"><div class="feed-title">📚 Farming Knowledge</div></div>
+    <p style="font-size:12px;color:var(--gray);margin-bottom:12px">Koi bhi fasal ka naam likho — puri jaankari milegi! 🌾</p>
+    <div class="kb-search">
+      <input type="text" id="kbInput" placeholder="Fasal ka naam... Aloe Vera, Makka, Ganna" onkeypress="if(event.key==='Enter')searchCrop()">
+      <button onclick="searchCrop()">🔍</button>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
+      <div class="chip" onclick="quickSearch('Aloe Vera')">🌱 Aloe Vera</div>
+      <div class="chip" onclick="quickSearch('Makka')">🌽 Makka</div>
+      <div class="chip" onclick="quickSearch('Haldi')">🌿 Haldi</div>
+      <div class="chip" onclick="quickSearch('Ganna')">🎋 Ganna</div>
+      <div class="chip" onclick="quickSearch('Ashwagandha')">🌿 Ashwagandha</div>
+      <div class="chip" onclick="quickSearch('Gehu')">🌾 Gehu</div>
+    </div>
+    <div id="kbResults"></div>
+  </div>
+</div>
+
+<div class="page" id="expertPage">
+  <div class="feed">
+    <div class="feed-header"><div class="feed-title">👨‍🌾 Agricultural Experts</div></div>
+    <p style="font-size:12px;color:var(--gray);margin-bottom:14px">Soil testing, crop selection ya buyer connect karwane ke liye expert se baat karo!</p>
+    <div id="expertList"></div>
+  </div>
+</div>
+
+<div class="page" id="chatPage">
+  <div class="feed">
+    <div class="feed-header"><div class="feed-title">💬 Meri Chats</div></div>
+    <div id="chatListContainer"><div class="empty-state"><div>💬</div><p>Login karo chats dekhne ke liye!</p></div></div>
+  </div>
+</div>
+
+<div class="page" id="profilePage">
+  <div class="feed" id="profileContent">
+    <div class="empty-state"><div>👤</div><p>Login karo!</p></div>
+  </div>
+</div>
+
+<div class="bottom-nav">
+  <div class="nav-item active" onclick="showPage('home')" id="navHome">
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+    <span>Home</span>
+  </div>
+  <div class="nav-item" onclick="showPage('knowledge')" id="navKnowledge">
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+    <span>Seekho</span>
+  </div>
+  <div class="nav-item" onclick="showPage('chat')" id="navChat">
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+    <span>Chat</span>
+  </div>
+  <div class="nav-item" onclick="showPage('profile')" id="navProfile">
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    <span>Profile</span>
+  </div>
+</div>
+
+<button class="ai-fab" onclick="toggleAI()">🤖</button>
+
+<div class="ai-box" id="aiBox">
+  <div class="ai-head">
+    <div>
+      <div class="ai-head-title">🤖 Maango AI</div>
+      <div class="ai-head-sub">Farming expert — 24/7 available</div>
+    </div>
+    <button class="ai-close-btn" onclick="toggleAI()">✕</button>
+  </div>
+  <div class="ai-msgs" id="aiMsgs">
+    <div class="ai-m bot">Namaste! Main Maango AI hoon. Koi bhi farming sawaal poochho — main madad karunga! 🌾</div>
+  </div>
+  <div class="ai-quick">
+    <div class="ai-q" onclick="askAI('Aloe vera kaise ugayein?')">🌱 Aloe Vera</div>
+    <div class="ai-q" onclick="askAI('Meri zameen ke liye konsi fasal best hai?')">🌾 Best Crop</div>
+    <div class="ai-q" onclick="askAI('Organic farming kaise karein?')">🌿 Organic</div>
+    <div class="ai-q" onclick="askAI('Aaj mandi mein rates kya hain?')">💰 Rates</div>
+  </div>
+  <div class="ai-inp">
+    <input type="text" id="aiInput" placeholder="Farming sawaal poochho..." onkeypress="if(event.key==='Enter')askAI()">
+    <button class="ai-send" onclick="askAI()">➤</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="postModal">
+  <div class="modal">
+    <button class="close-btn" onclick="closeModal('postModal')">✕</button>
+    <div class="modal-title">Demand Daalo</div>
+    <label class="form-label">Product * (koi bhi fasal)</label>
+    <input type="text" id="productName" placeholder="Jaise: Aloe Vera, Makka, Ganna, Roses...">
+    <label class="form-label">Quantity *</label>
+    <input type="text" id="quantity" placeholder="2 Ton, 500 KG...">
+    <label class="form-label">Location *</label>
+    <input type="text" id="location" placeholder="State / Sheher">
+    <label class="form-label">Price / Budget</label>
+    <input type="text" id="price" placeholder="Rs.50/kg ya Negotiable">
+    <label class="form-label">Extra Details</label>
+    <textarea id="description" placeholder="Kuch aur batana ho..."></textarea>
+    <button class="modal-submit" id="submitPostBtn" onclick="submitPost()">🚀 Post Karo</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="loginModal">
+  <div class="modal">
+    <button class="close-btn" onclick="closeModal('loginModal')">✕</button>
+    <div class="modal-title">Login Karo</div>
+    <label class="form-label">Email</label>
+    <input type="email" id="loginEmail" placeholder="aapka@email.com">
+    <label class="form-label">Password</label>
+    <input type="password" id="loginPassword" placeholder="Password">
+    <button class="modal-submit" id="loginBtn" onclick="doLogin()">Login</button>
+    <div class="link-text">Account nahi hai? <span onclick="closeModal('loginModal');showSignup()">Join Karo</span></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="signupModal">
+  <div class="modal">
+    <button class="close-btn" onclick="closeModal('signupModal')">✕</button>
+    <div class="modal-title">Account Banao — Free!</div>
+    <div class="type-btns">
+      <div class="type-btn selected" id="typeBuyer" onclick="selectType('buyer')"><div>🛒</div>Buyer</div>
+      <div class="type-btn" id="typeFarmer" onclick="selectType('farmer')"><div>🌾</div>Farmer</div>
+    </div>
+    <input type="text" id="signupName" placeholder="Poora Naam *">
+    <input type="email" id="signupEmail" placeholder="Email *">
+    <input type="tel" id="signupMobile" placeholder="Mobile Number *">
+    <input type="text" id="signupCity" placeholder="Sheher / Gaon *">
+    <input type="password" id="signupPassword" placeholder="Password (6+ characters) *">
+    <button class="modal-submit" id="signupBtn" onclick="doSignup()">✅ Join Karo</button>
+    <div class="link-text">Account hai? <span onclick="closeModal('signupModal');showLogin()">Login Karo</span></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="profileModal">
+  <div class="modal">
+    <button class="close-btn" onclick="closeModal('profileModal')">✕</button>
+    <div class="modal-title">Profile Complete Karo</div>
+    <p style="font-size:12px;color:#888;margin-bottom:12px">⚠️ Deal karne se pehle Govt ID zaroori hai!</p>
+    <select id="govtIdType">
+      <option value="">-- Govt ID Type *--</option>
+      <option value="aadhaar">Aadhaar Card</option>
+      <option value="pan">PAN Card</option>
+      <option value="voter">Voter ID</option>
+      <option value="passport">Passport</option>
+    </select>
+    <input type="text" id="govtIdNumber" placeholder="ID Number *">
+    <input type="text" id="businessName" placeholder="Business / Farm Name">
+    <select id="userState">
+      <option value="">-- State *--</option>
+      <option>Uttar Pradesh</option><option>Maharashtra</option><option>Punjab</option>
+      <option>Haryana</option><option>Rajasthan</option><option>Madhya Pradesh</option>
+      <option>Bihar</option><option>Gujarat</option><option>Karnataka</option>
+      <option>Tamil Nadu</option><option>West Bengal</option><option>Andhra Pradesh</option>
+      <option>Telangana</option><option>Kerala</option><option>Odisha</option><option>Other</option>
+    </select>
+    <button class="modal-submit" onclick="saveProfile()">✅ Save Karo</button>
+  </div>
+</div>
+
+<div class="full-chat" id="fullChat">
+  <div class="chat-nav">
+    <button class="chat-back" onclick="closeFullChat()">←</button>
+    <div class="chat-nav-avatar" id="chatNavAvatar">?</div>
+    <div>
+      <div class="chat-nav-name" id="chatNavName">Chat</div>
+      <div class="chat-nav-status">Online</div>
+    </div>
+  </div>
+  <div class="chat-body" id="chatBody"></div>
+  <div class="chat-input-area">
+    <input type="text" id="chatInputFull" placeholder="Message likho..." onkeypress="if(event.key==='Enter')sendMsg()">
+    <button class="send-btn" onclick="sendMsg()">➤</button>
+  </div>
+</div>
+
+<script>
+// ===== FIREBASE INIT =====
+var fbApp = firebase.initializeApp({
+  apiKey:"AIzaSyAikQe8asrbdh7BWmPKLu9HDCNg1J9tqr4",
+  authDomain:"maango-9c803.firebaseapp.com",
+  projectId:"maango-9c803",
+  storageBucket:"maango-9c803.firebasestorage.app",
+  messagingSenderId:"524807951878",
+  appId:"1:524807951878:web:1dcf661c2ef25231aed587"
+});
+var auth = firebase.auth();
+var db = firebase.firestore();
+
+// ===== GEMINI =====
+var GEMINI_KEY = "AIzaSyCel9DhwbOhViAXQMXAQ3uZDGp4V422lI8";
+var GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + GEMINI_KEY;
+
+async function gemini(prompt) {
+  try {
+    var res = await fetch(GEMINI_URL, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({contents:[{role:'user',parts:[{text:prompt}]}],generationConfig:{temperature:0.7,maxOutputTokens:1024}})
+    });
+    var data = await res.json();
+    return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  } catch(e) { return ''; }
+}
+
+// ===== STATE =====
+var currentUser = null;
+var currentUserData = null;
+var currentChatId = null;
+var selectedType = 'buyer';
+var allListings = [];
+var dynCats = new Set(['all']);
+var aiHistory = [];
+var currentLang = 'hinglish';
+
+// ===== LANGUAGE =====
+var langNames = {
+  hinglish:'Hinglish (Hindi+English mix)',hi:'Hindi',en:'English',
+  bn:'Bengali',pa:'Punjabi',gu:'Gujarati',mr:'Marathi',
+  ta:'Tamil',te:'Telugu',kn:'Kannada',ml:'Malayalam',ur:'Urdu',
+  ar:'Arabic',fr:'French',de:'German',zh:'Chinese',es:'Spanish',
+  pt:'Portuguese',ru:'Russian',ja:'Japanese',ko:'Korean',
+  tr:'Turkish',id:'Bahasa Indonesia',sw:'Swahili',fa:'Persian',
+  ne:'Nepali',si:'Sinhala',or:'Odia'
+};
+
+async function changeLang(lang) {
+  currentLang = lang;
+  // Fix 4: Page Reload on Hinglish reset to restore original texts
+  if(lang === 'hinglish') { 
+    window.location.reload();
+    return; 
+  }
+  showToast('🌍 Translating...');
+  var langName = langNames[lang] || lang;
+  var prompt = 'Translate these short UI text strings to ' + langName + '. Return ONLY a JSON object, no markdown, no explanation:\n{"search":"Kya Kharidna Hai?","searchSub":"Bulk mein seedha farmer se","feedTitle":"Buyer Demands","postBtn":"Demand Daalo"}';
+  var result = await gemini(prompt);
+  try {
+    // Fix: More robust JSON cleaning for AI Responses
+    var clean = result.replace(/```(json)?/gi, '').replace(/```/g, '').trim();
+    var t = JSON.parse(clean);
+    if(t.search) document.getElementById('searchTitleEl').textContent = t.search;
+    if(t.searchSub) document.getElementById('searchSubEl').textContent = t.searchSub;
+    if(t.feedTitle) document.getElementById('feedTitleEl').textContent = t.feedTitle;
+    if(t.postBtn) document.querySelector('.post-btn').textContent = '+ ' + t.postBtn;
+  } catch(e) {
+    console.error("Translation parse error", e);
+  }
+}
+
+// ===== AUTH =====
+auth.onAuthStateChanged(function(user) {
+  currentUser = user;
+  if(user) {
+    db.collection('users').doc(user.uid).get().then(function(doc) {
+      currentUserData = doc.exists ? doc.data() : null;
+      document.getElementById('navAuthBtn').textContent = '👤 ' + ((currentUserData && currentUserData.name) ? currentUserData.name.split(' ')[0] : 'Profile');
+      renderProfile();
+    });
+  } else {
+    currentUserData = null;
+    document.getElementById('navAuthBtn').textContent = '👤 Login';
+    renderProfile();
+  }
+  loadListings();
+});
+
+// ===== LISTINGS =====
+function loadListings() {
+  db.collection('listings').orderBy('createdAt','desc').onSnapshot(function(snap) {
+    allListings = snap.docs.map(function(d) { return Object.assign({id:d.id}, d.data()); });
+    allListings.forEach(function(l) { if(l.category) dynCats.add(l.category); });
+    updateCats();
+    renderCards(allListings);
+  }, function(err) {
+    console.log('Listings error:', err.message);
+    renderCards([]);
+  });
+}
+
+function catEmoji(cat) {
+  var e = {all:'🌟',gehu:'🌾',chaval:'🌾',dal:'🫘',pyaz:'🧅',aloevera:'🌱',haldi:'🌿',mirch:'🌶️',makka:'🌽',ganna:'🎋',sarson:'🌻',phal:'🍎',dryfruits:'🥜',other:'📦'};
+  return e[cat] || '🌿';
+}
+
+function updateCats() {
+  var container = document.getElementById('catChips');
+  var html = '';
+  dynCats.forEach(function(cat) {
+    html += '<div class="chip ' + (cat==='all'?'active':'') + '" onclick="filterCat(this,\'' + cat + '\')">' + catEmoji(cat) + ' ' + (cat==='all'?'Sab':cat.charAt(0).toUpperCase()+cat.slice(1)) + '</div>';
+  });
+  container.innerHTML = html;
+}
+
+function renderCards(data) {
+  var c = document.getElementById('feedContainer');
+  if(!data.length) {
+    c.innerHTML = '<div class="empty-state"><div>📋</div><p>Abhi koi demand nahi.<br>Demand daalo!</p></div>';
+    return;
+  }
+  var html = '';
+  data.forEach(function(l, i) {
+    var name = (l.userName || 'U').replace(/'/g,"\\'");
+    var product = (l.product || '').replace(/'/g,"\\'");
+    var uid = l.userId || '';
+    
+    // Fix 2: Handle Null Timestamp on newly posted cards
+    var time = (l.createdAt && typeof l.createdAt.toDate === 'function') 
+                ? new Date(l.createdAt.toDate()).toLocaleDateString() 
+                : 'Abhi';
+                
+    html += '<div class="card" style="animation-delay:' + (i*.07) + 's">' +
+      '<div class="card-header"><div class="buyer-info"><div class="avatar">' + (l.userName||'U')[0].toUpperCase() + '</div>' +
+      '<div><div class="buyer-name">' + (l.userName||'User') + '</div>' +
+      '<span class="buyer-type">' + (l.userType==='farmer'?'🌾 Farmer':'🛒 Buyer') + '</span></div></div>' +
+      '<span class="card-badge">' + (l.badge||'📋 New') + '</span></div>' +
+      '<div class="card-product">' + (l.product||'') + '</div>' +
+      '<div class="card-desc">' + (l.desc||'') + '</div>' +
+      '<div class="card-details"><div class="dtag">📦 <span>' + (l.qty||'') + '</span></div>' +
+      '<div class="dtag">📍 <span>' + (l.location||'') + '</span></div>' +
+      '<div class="dtag">💰 <span>' + (l.price||'Negotiable') + '</span></div></div>' +
+      '<div class="card-footer"><span class="card-time">🕐 ' + time + '</span>' +
+      '<button class="chat-btn" onclick="startChat(\'' + l.id + '\',\'' + uid + '\',\'' + name + '\',\'' + product + '\')">💬 Contact Karo</button>' +
+      '</div></div>';
+  });
+  c.innerHTML = html;
+}
+
+function filterCards() {
+  var q = document.getElementById('searchInput').value.toLowerCase();
+  renderCards(q ? allListings.filter(function(l){ return (l.product||'').toLowerCase().includes(q)||(l.location||'').toLowerCase().includes(q); }) : allListings);
+}
+
+function filterCat(el, cat) {
+  document.querySelectorAll('.chip').forEach(function(c){c.classList.remove('active');});
+  el.classList.add('active');
+  renderCards(cat==='all' ? allListings : allListings.filter(function(l){return l.category===cat;}));
+}
+
+function switchTab(el) {
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
+  el.classList.add('active');
+}
+
+function showPage(page) {
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.nav-item').forEach(function(n){n.classList.remove('active');});
+  var pageMap = {home:'homePage',knowledge:'knowledgePage',expert:'expertPage',chat:'chatPage',profile:'profilePage'};
+  var navMap = {home:'navHome',knowledge:'navKnowledge',chat:'navChat',profile:'navProfile'};
+  if(pageMap[page]) document.getElementById(pageMap[page]).classList.add('active');
+  if(navMap[page]) document.getElementById(navMap[page]).classList.add('active');
+  if(page==='chat') loadChats();
+  if(page==='profile') renderProfile();
+  if(page==='expert') renderExperts();
+}
+
+function handleNavBtn() { currentUser ? showPage('profile') : showLogin(); }
+function showLogin() { document.getElementById('loginModal').classList.add('show'); }
+function showSignup() { document.getElementById('signupModal').classList.add('show'); }
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg; t.style.display = 'block';
+  setTimeout(function(){t.style.display='none';}, 2800);
+}
+
+function showPostModal() {
+  if(!currentUser){showToast('⚠️ Pehle login karo!');showLogin();return;}
+  if(!currentUserData || !currentUserData.govtIdVerified){showToast('⚠️ Pehle profile complete karo!');document.getElementById('profileModal').classList.add('show');return;}
+  document.getElementById('postModal').classList.add('show');
+}
+
+function selectType(type) {
+  selectedType = type;
+  document.getElementById('typeBuyer').classList.toggle('selected',type==='buyer');
+  document.getElementById('typeFarmer').classList.toggle('selected',type==='farmer');
+}
+
+function doSignup() {
+  var name=document.getElementById('signupName').value.trim();
+  var email=document.getElementById('signupEmail').value.trim();
+  var mobile=document.getElementById('signupMobile').value.trim();
+  var city=document.getElementById('signupCity').value.trim();
+  var pass=document.getElementById('signupPassword').value.trim();
+  if(!name||!email||!mobile||!city||!pass){showToast('⚠️ Sab fields bharo!');return;}
+  if(pass.length<6){showToast('⚠️ Password 6+ characters!');return;}
+  var btn=document.getElementById('signupBtn');
+  btn.innerHTML='<span class="spinner"></span>...';btn.disabled=true;
+  auth.createUserWithEmailAndPassword(email,pass).then(function(cred){
+    cred.user.sendEmailVerification();
+    return db.collection('users').doc(cred.user.uid).set({
+      name:name,email:email,mobile:mobile,city:city,userType:selectedType,
+      govtIdVerified:false,profileComplete:false,
+      createdAt:firebase.firestore.FieldValue.serverTimestamp()
+    });
+  }).then(function(){
+    closeModal('signupModal');
+    showToast('✅ Account ban gaya! Email verify karo!');
+    ['signupName','signupEmail','signupMobile','signupCity','signupPassword'].forEach(function(id){document.getElementById(id).value='';});
+  }).catch(function(e){
+    showToast('❌ '+(e.code==='auth/email-already-in-use'?'Email pehle se registered!':e.message));
+  }).finally(function(){btn.innerHTML='✅ Join Karo';btn.disabled=false;});
+}
+
+function doLogin() {
+  var email=document.getElementById('loginEmail').value.trim();
+  var pass=document.getElementById('loginPassword').value.trim();
+  if(!email||!pass){showToast('⚠️ Email aur password daalo!');return;}
+  var btn=document.getElementById('loginBtn');
+  btn.innerHTML='<span class="spinner"></span>...';btn.disabled=true;
+  auth.signInWithEmailAndPassword(email,pass).then(function(){
+    closeModal('loginModal');
+    showToast('✅ Login ho gaya!');
+    document.getElementById('loginEmail').value='';
+    document.getElementById('loginPassword').value='';
+  }).catch(function(e){
+    showToast('❌ '+(e.code==='auth/invalid-credential'?'Email ya password galat!':e.message));
+  }).finally(function(){btn.innerHTML='Login';btn.disabled=false;});
+}
+
+function doLogout() {
+  auth.signOut().then(function(){showToast('👋 Logout!');showPage('home');});
+}
+
+function saveProfile() {
+  var govtIdType=document.getElementById('govtIdType').value;
+  var govtIdNumber=document.getElementById('govtIdNumber').value.trim();
+  var state=document.getElementById('userState').value;
+  if(!govtIdType||!govtIdNumber||!state){showToast('⚠️ Zaroori fields bharo!');return;}
+  db.collection('users').doc(currentUser.uid).set({
+    govtIdType:govtIdType,govtIdNumber:govtIdNumber,state:state,
+    businessName:document.getElementById('businessName').value.trim(),
+    govtIdVerified:true,profileComplete:true
+  },{merge:true}).then(function(){
+    return db.collection('users').doc(currentUser.uid).get();
+  }).then(function(doc){
+    currentUserData=doc.data();
+    closeModal('profileModal');
+    showToast('✅ Profile complete!');
+    renderProfile();
+  }).catch(function(e){showToast('❌ '+e.message);});
+}
+
+function renderProfile() {
+  var pc=document.getElementById('profileContent');
+  if(!currentUser){
+    pc.innerHTML='<div class="empty-state"><div>👤</div><p>Login karo ya account banao!</p></div>' +
+    '<div style="padding:0 16px 20px"><button class="modal-submit" style="border-radius:12px" onclick="showLogin()">Login Karo</button>' +
+    '<div class="link-text"><span onclick="showSignup()">Naya Account Banao</span></div></div>';
+    return;
+  }
+  var pct=currentUserData&&currentUserData.profileComplete?100:40;
+  var verified=currentUserData&&currentUserData.govtIdVerified;
+  pc.innerHTML='<div class="profile-header"><div class="profile-avatar">' + ((currentUserData&&currentUserData.name)||'U')[0].toUpperCase() + '</div>' +
+  '<div><div style="font-size:18px;font-weight:700">' + ((currentUserData&&currentUserData.name)||'User') + '</div>' +
+  '<div style="font-size:12px;opacity:.8;margin-top:2px">' + ((currentUserData&&currentUserData.userType)==='farmer'?'🌾 Farmer':'🛒 Buyer') + ' · ' + ((currentUserData&&currentUserData.city)||'') + '</div>' +
+  '<div style="margin-top:6px">' + (verified?'<span class="verify-badge">✅ Verified</span>':'<span class="unverified-badge">⚠️ Unverified</span>') +
+  (currentUser.emailVerified?'<span class="verify-badge">📧 Email OK</span>':'<span class="unverified-badge">📧 Verify Email</span>') + '</div></div></div>' +
+  '<div style="background:#fff;border-radius:12px;padding:14px;margin-bottom:12px;border:1px solid var(--border)">' +
+  '<div style="font-size:12px;font-weight:700;color:var(--green)">Profile: ' + pct + '% Complete</div>' +
+  '<div class="bar-track"><div class="bar-fill" style="width:' + pct + '%"></div></div>' +
+  '<div style="font-size:11px;color:var(--gray)">' + (pct<100?'Govt ID daalo deal ke liye!':'Bilkul ready! 🔥') + '</div></div>' +
+  '<div class="profile-menu">' +
+  (!verified?'<div class="profile-item" onclick="document.getElementById(\'profileModal\').classList.add(\'show\')"><span style="font-size:18px">🪪</span> Govt ID Verify Karo</div>':'') +
+  '<div class="profile-item" onclick="showPostModal()"><span style="font-size:18px">📋</span> Demand Daalo</div>' +
+  '<div class="profile-item" onclick="showPage(\'chat\')"><span style="font-size:18px">💬</span> Meri Chats</div>' +
+  '<div class="profile-item" onclick="showPage(\'knowledge\')"><span style="font-size:18px">📚</span> Farming Knowledge</div>' +
+  '<div class="profile-item" onclick="showPage(\'expert\')"><span style="font-size:18px">👨‍🌾</span> Expert Se Milein</div>' +
+  '<div class="profile-item logout-item" onclick="doLogout()"><span style="font-size:18px">🚪</span> Logout</div></div>';
+}
+
+function submitPost() {
+  var product=document.getElementById('productName').value.trim();
+  var qty=document.getElementById('quantity').value.trim();
+  var location=document.getElementById('location').value.trim();
+  if(!product||!qty||!location){showToast('⚠️ Product, Qty aur Location zaroori!');return;}
+  var btn=document.getElementById('submitPostBtn');
+  btn.innerHTML='<span class="spinner"></span>...';btn.disabled=true;
+  
+  var catPrompt = 'For agricultural product "' + product + '" return ONLY a single lowercase English word category slug. Examples: gehu, chaval, aloevera, pyaz, haldi, makka, ganna, sarson, dal, dryfruits, phal. Just the word, nothing else.';
+  gemini(catPrompt).then(function(catResult){
+    var category = (catResult||'other').trim().toLowerCase().replace(/[^a-z_]/g,'') || 'other';
+    dynCats.add(category);
+    updateCats();
+    return db.collection('listings').add({
+      product:product, qty:qty, location:location,
+      price:document.getElementById('price').value.trim()||'Negotiable',
+      desc:document.getElementById('description').value.trim(),
+      category:category, badge:'🆕 Naya',
+      userId:currentUser.uid,
+      userName:(currentUserData&&currentUserData.name)||'User',
+      userType:(currentUserData&&currentUserData.userType)||'buyer',
+      createdAt:firebase.firestore.FieldValue.serverTimestamp()
+    });
+  }).then(function(){
+    closeModal('postModal');
+    showToast('✅ Demand post ho gayi!');
+    ['productName','quantity','location','price','description'].forEach(function(id){document.getElementById(id).value='';});
+  }).catch(function(e){showToast('❌ '+e.message);})
+  .finally(function(){btn.innerHTML='🚀 Post Karo';btn.disabled=false;});
+}
+
+// ===== CHAT =====
+function startChat(listingId, sellerId, sellerName, product) {
+  if(!currentUser){showToast('⚠️ Pehle login karo!');showLogin();return;}
+  if(!currentUserData||!currentUserData.govtIdVerified){showToast('⚠️ Profile complete karo!');document.getElementById('profileModal').classList.add('show');return;}
+  if(sellerId===currentUser.uid){showToast('⚠️ Ye aapki apni listing hai!');return;}
+  var chatId=[currentUser.uid,sellerId].sort().join('_')+'_'+listingId;
+  currentChatId=chatId;
+  db.collection('chats').doc(chatId).set({
+    participants:[currentUser.uid,sellerId],
+    listingId:listingId, product:product,
+    buyerName:currentUserData.name,
+    sellerName:sellerName,
+    updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+  },{merge:true});
+  document.getElementById('chatNavName').textContent=sellerName;
+  document.getElementById('chatNavAvatar').textContent=sellerName[0].toUpperCase();
+  document.getElementById('chatBody').innerHTML='';
+  listenMsgs(chatId);
+  document.getElementById('fullChat').classList.add('show');
+}
+
+function listenMsgs(chatId) {
+  db.collection('chats').doc(chatId).collection('messages').orderBy('createdAt').onSnapshot(function(snap){
+    var body=document.getElementById('chatBody');
+    var html='';
+    snap.docs.forEach(function(d){
+      var m=d.data();
+      var sent=m.senderId===(currentUser&&currentUser.uid);
+      
+      // Fix 2: Handle Null Timestamp on newly sent messages
+      var time = (m.createdAt && typeof m.createdAt.toDate === 'function') 
+                 ? new Date(m.createdAt.toDate()).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}) 
+                 : 'Abhi';
+                 
+      html+='<div class="msg ' + (sent?'sent':'received') + '">' + m.text + '<div class="msg-time">' + time + '</div></div>';
+    });
+    body.innerHTML=html;
+    body.scrollTop=body.scrollHeight;
+  });
+}
+
+function sendMsg() {
+  var input=document.getElementById('chatInputFull');
+  var text=input.value.trim();
+  if(!text||!currentChatId)return;
+  input.value='';
+  db.collection('chats').doc(currentChatId).collection('messages').add({
+    text:text, senderId:currentUser.uid,
+    senderName:(currentUserData&&currentUserData.name)||'User',
+    createdAt:firebase.firestore.FieldValue.serverTimestamp()
+  });
+  db.collection('chats').doc(currentChatId).set({updatedAt:firebase.firestore.FieldValue.serverTimestamp(),lastMsg:text},{merge:true});
+}
+
+function closeFullChat(){document.getElementById('fullChat').classList.remove('show');}
+
+function loadChats() {
+  if(!currentUser){document.getElementById('chatListContainer').innerHTML='<div class="empty-state"><div>💬</div><p>Login karo!</p></div>';return;}
+  
+  // Fix 1: Removed orderBy('updatedAt', 'desc') which was causing Firebase crash without Index. Handled via JS sort below.
+  db.collection('chats').where('participants','array-contains',currentUser.uid).onSnapshot(function(snap){
+    var c=document.getElementById('chatListContainer');
+    if(snap.empty){c.innerHTML='<div class="empty-state"><div>💬</div><p>Koi chat nahi abhi.</p></div>';return;}
+    
+    var docs = snap.docs.map(function(d) { return Object.assign({id: d.id}, d.data()); });
+    
+    // JS Sorting for Chats
+    docs.sort(function(a, b) {
+      var tA = (a.updatedAt && typeof a.updatedAt.toMillis === 'function') ? a.updatedAt.toMillis() : 0;
+      var tB = (b.updatedAt && typeof b.updatedAt.toMillis === 'function') ? b.updatedAt.toMillis() : 0;
+      return tB - tA;
+    });
+
+    var html='';
+    docs.forEach(function(chat){
+      var other=chat.participants[0]===currentUser.uid?chat.sellerName:chat.buyerName;
+      html+='<div class="chat-list-item" onclick="openChat(\'' + chat.id + '\',\'' + (other||'User').replace(/'/g,"\\'") + '\')">' +
+      '<div class="chat-list-av">' + (other||'U')[0].toUpperCase() + '</div>' +
+      '<div style="flex:1"><div style="font-weight:700;font-size:13px">' + (other||'User') + '</div>' +
+      '<div style="font-size:11px;color:var(--gray)">📦 ' + (chat.product||'') + ' — ' + (chat.lastMsg||'Chat shuru karo') + '</div></div></div>';
+    });
+    c.innerHTML=html;
+  });
+}
+
+function openChat(chatId, name) {
+  currentChatId=chatId;
+  document.getElementById('chatNavName').textContent=name;
+  document.getElementById('chatNavAvatar').textContent=name[0].toUpperCase();
+  document.getElementById('chatBody').innerHTML='';
+  listenMsgs(chatId);
+  document.getElementById('fullChat').classList.add('show');
+}
+
+// ===== AI =====
+function toggleAI(){document.getElementById('aiBox').classList.toggle('show');}
+
+function askAI(override) {
+  var input=document.getElementById('aiInput');
+  var msg=override||input.value.trim();
+  if(!msg)return;
+  input.value='';
+  var msgs=document.getElementById('aiMsgs');
+  
+  // Fix 3: Use insertAdjacentHTML instead of innerHTML += to preserve focus and scroll
+  msgs.insertAdjacentHTML('beforeend', '<div class="ai-m usr">' + msg + '</div>');
+  
+  var tid='t'+Date.now();
+  msgs.insertAdjacentHTML('beforeend', '<div id="' + tid + '" class="ai-m bot"><div class="ai-typing"><span></span><span></span><span></span></div></div>');
+  msgs.scrollTop=msgs.scrollHeight;
+  
+  aiHistory.push(msg);
+  var langName = langNames[currentLang] || 'Hinglish';
+  var sysPrompt = 'You are Maango AI — friendly farming assistant. Language: ' + langName + '. If Hinglish, use casual Hindi+English mix. Help with: crop growing, soil, seasons, costs, market prices. Keep answers practical and short (3-5 lines).';
+  
+  gemini(sysPrompt + '\n\nUser: ' + msg).then(function(reply){
+    var el=document.getElementById(tid);
+    if(el) el.outerHTML='<div class="ai-m bot">' + (reply||'Maafi, dobara try karo!').replace(/\n/g,'<br>') + '</div>';
+    msgs.scrollTop=msgs.scrollHeight;
+  });
+}
+
+// ===== KNOWLEDGE =====
+function quickSearch(crop){document.getElementById('kbInput').value=crop;searchCrop();}
+
+function searchCrop() {
+  var query=document.getElementById('kbInput').value.trim();
+  if(!query){showToast('⚠️ Crop ka naam likho!');return;}
+  var container=document.getElementById('kbResults');
+  container.innerHTML='<div class="empty-state"><div>⏳</div><p>Jankari dhundh raha hoon...</p></div>';
+  var langName=langNames[currentLang]||'Hinglish';
+  var prompt='Give complete farming guide for "' + query + '" in ' + langName + '. Return ONLY valid JSON (no markdown):\n{"crop":"name","emoji":"emoji","season":"season","duration":"days","soil":"soil type","water":"water needs","climate":"climate","steps":["step1","step2","step3","step4","step5"],"profit":"profit/acre","tips":"important tips","buyers":"who buys this"}';
+  
+  gemini(prompt).then(function(result){
+    try {
+      // Robust JSON Parsing
+      var clean = result.replace(/```(json)?/gi, '').replace(/```/g, '').trim();
+      var d = JSON.parse(clean);
+      
+      container.innerHTML='<div class="kb-card">' +
+      '<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">' +
+      '<div style="width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,var(--green),var(--green2));display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0">' + (d.emoji||'🌱') + '</div>' +
+      '<div><div style="font-weight:700;font-size:15px;color:var(--green)">' + (d.crop||query) + '</div>' +
+      '<div style="font-size:11px;color:var(--gray)">⏱️ ' + (d.duration||'') + ' · 🌡️ ' + (d.climate||'') + '</div></div></div>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">' +
+      '<div style="background:var(--bg);border-radius:8px;padding:8px;font-size:11px"><strong>🗓️ Season</strong><br>' + (d.season||'') + '</div>' +
+      '<div style="background:var(--bg);border-radius:8px;padding:8px;font-size:11px"><strong>🌍 Soil</strong><br>' + (d.soil||'') + '</div>' +
+      '<div style="background:var(--bg);border-radius:8px;padding:8px;font-size:11px"><strong>💧 Water</strong><br>' + (d.water||'') + '</div>' +
+      '<div style="background:var(--bg);border-radius:8px;padding:8px;font-size:11px"><strong>💰 Profit</strong><br>' + (d.profit||'') + '</div></div>' +
+      '<div style="margin-bottom:10px"><div style="font-weight:700;font-size:13px;color:var(--green);margin-bottom:6px">📋 Steps:</div>' +
+      (d.steps||[]).map(function(s,i){return '<div style="display:flex;gap:8px;margin-bottom:6px;font-size:12px"><span style="background:var(--gold);color:var(--green);width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:10px;flex-shrink:0">' + (i+1) + '</span>' + s + '</div>';}).join('') + '</div>' +
+      '<div style="background:#e8f5ee;border-radius:8px;padding:10px;font-size:12px;margin-bottom:8px"><strong>💡 Tips:</strong> ' + (d.tips||'') + '</div>' +
+      '<div style="background:#FFF3E0;border-radius:8px;padding:10px;font-size:12px;margin-bottom:10px"><strong>🛒 Buyers:</strong> ' + (d.buyers||'') + '</div>' +
+      '<button onclick="document.getElementById(\'aiInput\').value=\'' + query + ' ke baare mein aur batao\';document.getElementById(\'aiBox\').classList.add(\'show\');askAI(\'' + query + ' ki kheti mein kya challenges hain?\');" style="width:100%;background:var(--green);color:#fff;border:none;padding:10px;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer">🤖 AI Se Aur Poochho</button>' +
+      '</div>';
+    } catch(e) {
+      container.innerHTML='<div class="kb-card"><div style="font-size:13px;line-height:1.8">' + result.replace(/\n/g,'<br>') + '</div></div>';
+    }
+  });
+}
+
+// ===== EXPERTS =====
+function renderExperts() {
+  var experts=[
+    {name:'Ramesh Kumar',skill:'Soil Testing & Crop Selection',exp:'15 saal',loc:'UP/Bihar',e:'👨‍🌾'},
+    {name:'Dr. Priya Singh',skill:'Organic Farming Expert',exp:'10 saal',loc:'Punjab/Haryana',e:'👩‍🔬'},
+    {name:'Mohammad Salim',skill:'Export Quality Crops',exp:'12 saal',loc:'All India',e:'🌍'},
+    {name:'Sunita Devi',skill:'Medicinal Plants Specialist',exp:'Aloe Vera, Ashwagandha',loc:'Rajasthan/MP',e:'🌿'},
+  ];
+  document.getElementById('expertList').innerHTML=experts.map(function(ex){
+    return '<div class="expert-card"><div class="expert-av">' + ex.e + '</div>' +
+    '<div><div style="font-weight:700;font-size:13px">' + ex.name + '</div>' +
+    '<div style="font-size:11px;color:var(--gray)">' + ex.skill + '</div>' +
+    '<div style="font-size:10px;color:var(--gray);margin-top:2px">📍 ' + ex.loc + ' · ' + ex.exp + '</div></div>' +
+    '<button class="expert-btn" onclick="contactExpert(\'' + ex.name + '\')">Connect</button></div>';
+  }).join('');
+}
+
+function contactExpert(name) {
+  if(!currentUser){showToast('⚠️ Pehle login karo!');showLogin();return;}
+  showToast('✅ Request send! ' + name + ' jaldi contact karenge!');
+}
+
+document.querySelectorAll('.modal-overlay').forEach(function(o){
+  o.addEventListener('click',function(e){if(e.target===this)this.classList.remove('show');});
+});
+</script>
+</body>
+</html>
+
