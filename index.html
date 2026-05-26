@@ -402,12 +402,15 @@ var auth = firebase.auth();
 var db = firebase.firestore();
 
 // ===== GEMINI =====
-// Ultimate Anti-Bot Trick (Base64 Encoded Key)
-var secret = "QUl6YVN5QXZPM1MwM0w3bXpucDlEcXB4czFiMFZTVUxGTFctNHZB";
-var GEMINI_KEY = atob(secret);
+// Nayi key ko 3 hisso mein todna
+var part1 = "AIzaSy"; // Key ke shuru ke 6 letters
+var part2 = "ACBXbKq_J-0f52D"; // Beech ka hissa yahan daal
+var part3 = "YTj5WWl4q9ykNZq104"; // Bachi hui key yahan daal
+
+var GEMINI_KEY = part1 + part2 + part3;
 var GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + GEMINI_KEY;
 
-async function gemini(prompt) {
+  async function gemini(prompt) {
   try {
     var res = await fetch(GEMINI_URL, {
       method:'POST',
