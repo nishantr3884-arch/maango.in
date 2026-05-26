@@ -408,31 +408,22 @@ var part2 = "ACBXbKq_J-0f52D"; // Beech ka hissa yahan daal
 var part3 = "YTj5WWl4q9ykNZq104"; // Bachi hui key yahan daal
 
 var GEMINI_KEY = part1 + part2 + part3;
-var GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + GEMINI_KEY;
+// URL mein humne 2.0 ki jagah 1.5-flash kar diya hai
+var GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + GEMINI_KEY;
 
-  async function gemini(prompt) {
+async function gemini(prompt) {
   try {
     var res = await fetch(GEMINI_URL, {
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({contents:[{role:'user',parts:[{text:prompt}]}],generationConfig:{temperature:0.7,maxOutputTokens:1024}})
     });
-    
-    // 🚨 Naya Code: Jo hidden error ko screen par dikhayega
-    if (!res.ok) {
-       let errorDetails = await res.text();
-       alert("GURUJI ERROR AAYA HAI:\nStatus: " + res.status + "\nReason: " + errorDetails);
-       return "Bhai, screen par jo popup aaya uska screenshot le le.";
-    }
-
     var data = await res.json();
     return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
   } catch(e) { 
-    alert("CATCH ERROR: " + e.message);
     return 'Maafi, dobara try karo!'; 
   }
 }
-
 
 // ===== STATE =====
 var currentUser = null;
