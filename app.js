@@ -125,4 +125,122 @@ function loadContracts() {
         </div>
     `;
 }
+// ==========================================
+// 7. CONTRACT & ESCROW LOGIC (REAL-TIME)
+// ==========================================
+
+// Modal open karne ka function (Sirf Expert ke liye)
+function openContractModal() {
+    if(!currentUserData || currentUserData.userType !== 'expert') {
+        showToast("⚠️ Access Denied: Only verified Experts can draft contracts.");
+        return;
+    }
+    document.getElementById('contractModal').classList.add('show');
+}
+
+// Naya Contract Firebase mein save karna
+function createContract() {
+    const buyer = document.getElementById('contractBuyer').value.trim();
+    const farmer = document.getElementById('contractFarmer').value.trim();
+    const crop = document.getElementById('contractCrop').value.trim();
+    const amount = document.getElementById('contractAmount').value.trim();
+
+    if(!buyer || !farmer || !crop || !amount) {
+        showToast("⚠️ All fields are required!");
+        return;
+    }
+
+    const btn = document.getElementById('submitContractBtn');
+    btn.innerHTML = '<span class="spinner"></span> Locking...';
+    btn.disabled = true;
+
+    // Ek unique Contract ID banana
+    const contractId = 'MNG-' + Math.floor(Math.random() * 90000 + 10000);
+
+    db.collection('contracts').add({
+        contractId: contractId,
+        buyerRef: buyer,
+        farmerRef: farmer,
+        expertId: currentUser.uid,
+        expertName: currentUserData.name || 'Expert',
+        cropDetails: crop,
+        escrowAmount: amount,
+        status: 'Escrow Locked 🔒',
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(() => {
+        closeModal('contractModal');
+        showToast("✅ Contract Drafted & Escrow Locked!");
+        
+        // Form clear karna
+        document.getElementById('contractBuyer').value = '';
+        document.getElementById('contractFarmer').value = '';
+        document.getElementById('contractCrop').value = '';
+        document.getElementById('contractAmount').value = '';
+    }).catch(e => {
+        showToast("❌ Error: " + e.message);
+    }).finally(() => {
+        btn.innerHTML = '🔒 Lock in Escrow';
+        btn.disabled = false;
+    });
+}
+
+// Firebase se Contracts nikal kar UI par dikhana (Isse purana wala loadContracts replace kar dena)
+function loadContracts() {
+    if(!currentUser) return;
+    const container = document.getElementById('contractsContainer');
+    container.innerHTML = '<div class="empty-state"><span class="spinner"></span><p>Syncing secure ledger...</p></div>';
+
+    // Firebase real-time listener contracts collection ke liye
+    db.collection('contracts').orderBy('createdAt', 'desc').onSnapshot((snap) => {
+        
+        // Agar user Expert hai, toh use "Draft Contract" ka button dikhega
+        let expertBtn = '';
+        if(currentUserData && currentUserData.userType === 'expert') {
+            expertBtn = '<button class="post-btn" style="margin-bottom:16px; width:100%;" onclick="openContractModal()">+ Draft New Contract</button>';
+        }
+
+        if(snap.empty) {
+            container.innerHTML = `
+                ${expertBtn}
+                <div class="empty-state">
+                    <div style="font-size: 48px; margin-bottom: 12px;">🔐</div>
+                    <p>No active contracts found in the system.</p>
+                </div>
+            `;
+            return;
+        }
+
+        let html = expertBtn; // Button top par add karna
+
+        snap.docs.forEach(doc => {
+            const data = doc.data();
+            html += `
+                <div class="card" style="border-left: 4px solid var(--gold);">
+                    <div style="font-size:12px; color:var(--gray); font-weight:bold;">Contract ID: #${data.contractId}</div>
+                    <div style="font-weight:900; font-size:18px; margin-top:4px; color:var(--green);">${data.cropDetails}</div>
+                    
+                    <div style="margin-top:12px; display:flex; justify-content:space-between; align-items:center;">
+                        <span style="background:#e8f5ee; color:var(--green); padding:6px 10px; border-radius:8px; font-size:12px; font-weight:800; border: 1px solid var(--green2);">
+                            ${data.status}
+                        </span>
+                        <span style="font-weight:900; color:var(--green2); font-size:18px;">
+                            ₹${data.escrowAmount}
+                        </span>
+                    </div>
+                    
+                    <div style="margin-top:16px; font-size:13px; color:var(--text); background: var(--bg); padding: 12px; border-radius: 12px;">
+                        <div style="margin-bottom:4px;">👨‍🏫 <strong>Expert:</strong> ${data.expertName}</div>
+                        <div style="margin-bottom:4px;">🛒 <strong>Buyer:</strong> ${data.buyerRef}</div>
+                        <div>🌾 <strong>Farmer:</strong> ${data.farmerRef}</div>
+                    </div>
+                </div>
+            `;
+        });
+        
+        container.innerHTML = html;
+    }, (error) => {
+        console.error("Error fetching contracts:", error);
+        container.innerHTML = '<div class="empty-state"><p>Error connecting to secure ledger.</p></div>';
+    });
+}
 
