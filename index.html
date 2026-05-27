@@ -3,13 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Maango — Global Demand First Marketplace</title>
+<title>Maango — Demand First Marketplace</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Hind:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -17,68 +18,90 @@
 
 <nav>
   <div class="logo">maan<span>go</span></div>
-  <div class="nav-right" style="display:flex; gap:10px; align-items:center;">
-    <select id="langToggle" onchange="switchLanguage(this.value)" style="background:#f1f5f9; border:1px solid #e2e8f0; padding:6px 10px; border-radius:12px; font-size:13px; font-weight:600; outline:none; cursor:pointer; color:var(--text);">
-        <option value="en">🇬🇧 English</option>
-        <option value="hi">🇮🇳 Hinglish</option>
+  <div class="nav-right" style="display:flex; gap:12px; align-items:center;">
+    <select id="langToggle" onchange="switchLanguage(this.value)" style="background:#f5f0e8; border:none; padding:6px 12px; border-radius:20px; font-size:13px; font-weight:700; outline:none; cursor:pointer; color:var(--green);">
+        <option value="en">🇬🇧 EN</option>
+        <option value="hi">🇮🇳 HI</option>
     </select>
     <button class="btn-nav" id="navAuthBtn" onclick="handleNavBtn()" data-i18n="loginBtn">👤 Login</button>
   </div>
 </nav>
 
-<div class="tabs" id="mainTabs">
-  <div class="tab active" onclick="switchTab(this);showPage('home')" data-i18n="tabMarket">📱 Market</div>
-  <div class="tab" onclick="switchTab(this);showPage('contracts')" data-i18n="tabContracts">🤝 Contracts</div>
+<div class="search-section">
+  <h2 data-i18n="heroTitle">What do you want to buy?</h2>
+  <p data-i18n="heroSub">In bulk — Direct from verified farmers</p>
+  <div class="search-bar">
+    <button class="mic-btn" onclick="startVoiceTyping('searchInput')">🎤</button>
+    <input type="text" id="searchInput" placeholder="Wheat, Aloe Vera, Corn..." oninput="filterCards()">
+    <button class="sch-btn" onclick="filterCards()" data-i18n="searchBtn">Search</button>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab(this);showPage('home')" data-i18n="tabFeed">📱 Feed</div>
+  <div class="tab" onclick="switchTab(this);showPage('knowledge')" data-i18n="tabLearn">📚 Learn</div>
   <div class="tab" onclick="switchTab(this);showPage('expert')" data-i18n="tabExperts">👨‍🌾 Experts</div>
+  <div class="tab" onclick="switchTab(this);showPage('farmerDir')" data-i18n="tabFarmers">🌾 Farmers</div>
+  <div class="tab" onclick="switchTab(this);showPage('buyerDir')" data-i18n="tabBuyers">🛒 Buyers</div>
   <div class="tab" onclick="switchTab(this);showPage('chat')" data-i18n="tabChats">💬 Chats</div>
 </div>
 
 <div class="page active" id="homePage">
-  <div class="search-section">
-    <h2 data-i18n="heroTitle">Global Bulk Demand</h2>
-    <p data-i18n="heroSub">Connecting International Buyers with Verified Farmers</p>
-    <div class="search-bar">
-      <input type="text" id="searchInput" placeholder="Search Wheat, Aloe Vera..." oninput="filterCards()">
-      <button class="sch-btn" onclick="filterCards()" data-i18n="searchBtn">Search</button>
+  <div class="section">
+    <div class="section-title" data-i18n="hotCats">🔥 Hot Categories</div>
+    <div class="categories" id="catChips">
+      <div class="chip active" onclick="filterCat(this,'all')">🌟 All</div>
     </div>
   </div>
-  
   <div class="feed">
     <div class="feed-header">
-      <div class="feed-title" data-i18n="liveDemands">📋 Live Market Demands</div>
+      <div class="feed-title" data-i18n="liveDemands">📋 Market Demands</div>
       <button class="post-btn" onclick="showPostModal()" data-i18n="postDemandBtn">+ Post Demand</button>
     </div>
-    <div id="feedContainer">
-      <div class="empty-state"><span class="spinner"></span><p>Loading market data...</p></div>
-    </div>
+    <div id="feedContainer"><div class="empty-state"><span class="spinner" style="border-top-color:var(--green)"></span><p>Loading market data...</p></div></div>
   </div>
 </div>
 
-<div class="page" id="contractsPage">
+<div class="page" id="knowledgePage">
   <div class="feed">
-    <div class="feed-header"><div class="feed-title" data-i18n="activeContracts">🤝 Active Contracts</div></div>
-    <p style="font-size:13px;color:var(--gray);margin-bottom:16px" data-i18n="contractSub">Managed by Experts. Escrow payments secured.</p>
-    <div id="contractsContainer">
-      <div class="empty-state"><div>🔐</div><p data-i18n="loginViewContracts">Login to view your secure contracts.</p></div>
+    <div class="feed-header"><div class="feed-title">📚 Agriculture Guide</div></div>
+    <p style="font-size:13px;color:var(--gray);margin-bottom:16px">Enter any crop name to get complete growing guides and market insights.</p>
+    <div style="display:flex;background:#fff;border:1.5px solid var(--border);border-radius:24px;overflow:hidden;margin-bottom:16px">
+      <input type="text" id="kbInput" placeholder="e.g. Aloe Vera, Turmeric..." style="flex:1;padding:14px 16px;border:none;outline:none;font-size:14px" onkeypress="if(event.key==='Enter')searchCrop()">
+      <button onclick="searchCrop()" style="background:var(--green);border:none;padding:0 24px;color:#fff;font-weight:700;cursor:pointer">Search</button>
     </div>
+    <div id="kbResults"></div>
   </div>
 </div>
 
 <div class="page" id="expertPage">
   <div class="feed">
     <div class="feed-header"><div class="feed-title">👨‍🏫 Verified Experts</div></div>
-    <div id="expertList">
-        <div class="empty-state"><p>Loading Experts...</p></div>
-    </div>
+    <p style="font-size:13px;color:var(--gray);margin-bottom:16px">Consult with agricultural scientists and verified professionals.</p>
+    <div id="expertList"></div>
+  </div>
+</div>
+
+<div class="page" id="farmerDirPage">
+  <div class="feed">
+    <div class="feed-header"><div class="feed-title">🌾 Verified Farmers</div></div>
+    <p style="font-size:13px;color:var(--gray);margin-bottom:16px">Connect directly with crop growers across India.</p>
+    <div id="farmerList"></div>
+  </div>
+</div>
+
+<div class="page" id="buyerDirPage">
+  <div class="feed">
+    <div class="feed-header"><div class="feed-title">🛒 Verified Buyers</div></div>
+    <p style="font-size:13px;color:var(--gray);margin-bottom:16px">Find businesses and wholesale buyers easily.</p>
+    <div id="buyerList"></div>
   </div>
 </div>
 
 <div class="page" id="chatPage">
   <div class="feed">
     <div class="feed-header"><div class="feed-title">💬 Messages</div></div>
-    <div id="chatListContainer">
-        <div class="empty-state"><div>🔒</div><p>Login to view your conversations.</p></div>
-    </div>
+    <div id="chatListContainer"><div class="empty-state"><div>🔒</div><p>Login to view your conversations.</p></div></div>
   </div>
 </div>
 
@@ -88,14 +111,85 @@
   </div>
 </div>
 
+<div class="site-footer">
+  <div class="footer-links">
+    <span onclick="openLegal('help')">Help Center</span>
+    <span onclick="openLegal('contact')">Contact Us</span>
+    <span onclick="openLegal('privacy')">Privacy & Terms</span>
+  </div>
+  <p>© 2026 Maango. All rights reserved.</p>
+  <p style="opacity:0.6; margin-top:4px;">Built with Trust & Security in India</p>
+</div>
+
+<div class="bottom-nav">
+  <div class="nav-item active" onclick="showPage('home')" id="navHome">
+    <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+    <span data-i18n="navHome">Home</span>
+  </div>
+  <div class="nav-item" onclick="showPage('knowledge')" id="navKnowledge">
+    <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477-4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+    <span data-i18n="navLearn">Learn</span>
+  </div>
+  <div class="nav-item" onclick="showPage('chat')" id="navChat">
+    <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+    <span data-i18n="navChat">Chat</span>
+  </div>
+  <div class="nav-item" onclick="showPage('profile')" id="navProfile">
+    <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    <span data-i18n="navProfile">Profile</span>
+  </div>
+</div>
+
+<button class="ai-fab" onclick="toggleAI()">🤖</button>
+<div class="ai-box" id="aiBox">
+  <div class="ai-head">
+    <div class="ai-head-title">🤖 Maango AI</div>
+    <button class="ai-close-btn" onclick="toggleAI()">✕</button>
+  </div>
+  <div class="ai-msgs" id="aiMsgs">
+    <div class="ai-m bot">Hello! I am Maango AI. Ask me any farming question in your preferred language! 🌾</div>
+  </div>
+  <div class="ai-inp">
+    <button class="mic-btn" style="background:#f5f0e8; width:36px; height:36px;" onclick="startVoiceTyping('aiInput')">🎤</button>
+    <input type="text" id="aiInput" placeholder="Type or speak..." onkeypress="if(event.key==='Enter')askAI()">
+    <button class="ai-send" onclick="askAI()">➤</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="legalModal">
+  <div class="modal">
+    <button class="close-btn" onclick="closeModal('legalModal')">✕</button>
+    <div class="modal-title" id="legalTitle">Information</div>
+    <div id="legalBody" style="font-size:14px; line-height:1.6; color:#444;"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="postModal">
+  <div class="modal">
+    <button class="close-btn" onclick="closeModal('postModal')">✕</button>
+    <div class="modal-title">Post a Demand</div>
+    <label class="form-label">Crop / Product *</label>
+    <input type="text" id="productName" placeholder="e.g. Aloe Vera, Wheat...">
+    <label class="form-label">Quantity Required *</label>
+    <input type="text" id="quantity" placeholder="e.g. 2 Tons, 500 KG">
+    <label class="form-label">Location *</label>
+    <input type="text" id="location" placeholder="City or State">
+    <label class="form-label">Target Price</label>
+    <input type="text" id="price" placeholder="e.g. Rs.50/kg or Negotiable">
+    <label class="form-label">Additional Details</label>
+    <textarea id="description" placeholder="Specific quality requirements..."></textarea>
+    <button class="modal-submit" id="submitPostBtn" onclick="submitPost()">🚀 Post Demand</button>
+  </div>
+</div>
+
 <div class="modal-overlay" id="authModal">
   <div class="modal">
     <button class="close-btn" onclick="closeModal('authModal')">✕</button>
-    <div class="modal-title" id="authTitle" data-i18n="authTitle">Secure Access</div>
+    <div class="modal-title" id="authTitle">Secure Access</div>
     
     <div class="auth-tabs">
-      <div class="auth-tab active" id="tabLogin" onclick="switchAuthMode('login')" data-i18n="authLogin">Login</div>
-      <div class="auth-tab" id="tabSignup" onclick="switchAuthMode('signup')" data-i18n="authSignup">Create Account</div>
+      <div class="auth-tab active" id="tabLogin" onclick="switchAuthMode('login')">Login</div>
+      <div class="auth-tab" id="tabSignup" onclick="switchAuthMode('signup')">Create Account</div>
     </div>
 
     <div id="signupExtraFields" style="display:none; margin-top:8px;">
@@ -105,74 +199,67 @@
         <div class="type-btn" id="typeExpert" onclick="selectType('expert')">👨‍🏫 Expert</div>
       </div>
       <input type="text" id="authName" placeholder="Full Legal Name *">
-      <input type="text" id="authCountry" placeholder="Country *">
+      <input type="tel" id="authMobile" placeholder="Mobile Number *">
+      <input type="text" id="authCity" placeholder="City / District *">
     </div>
 
     <input type="email" id="authEmail" placeholder="Email Address *">
     <input type="password" id="authPassword" placeholder="Password (Min 6 chars) *">
 
-    <button class="modal-submit" id="authMainBtn" onclick="processAuth()" data-i18n="authMainBtnTxt">Secure Login</button>
+    <button class="modal-submit" id="authMainBtn" onclick="processAuth()">Secure Login</button>
+    
+    <div class="link-text" id="forgotPwdLink" style="margin-top:16px;">Forgot Password? <span onclick="resetPassword()">Reset Here</span></div>
   </div>
 </div>
 
 <div class="modal-overlay" id="profileModal">
   <div class="modal">
     <button class="close-btn" onclick="closeModal('profileModal')">✕</button>
-    <div class="modal-title" data-i18n="kycTitle">International KYC</div>
+    <div class="modal-title">Identity Verification (KYC)</div>
+    <div style="background:#e8f5ee; border:1px solid var(--green2); padding:12px; border-radius:12px; margin-bottom:16px; font-size:12px; line-height:1.5; color:var(--green)">
+      🔒 <strong>Data Security Notice:</strong> Maango uses end-to-end encryption to store your ID details. We never share documents publicly. Providing fake documents will lead to account suspension.
+    </div>
     
-    <label class="form-label" data-i18n="kycDocType">Select Document Type *</label>
+    <label class="form-label">Select Document Type *</label>
     <select id="govtIdType">
       <option value="">-- Choose Valid ID --</option>
-      <option value="national_id">National ID (Aadhaar / SSN)</option>
-      <option value="passport">Passport</option>
+      <option value="national_id">National ID ([Aadhaar Redacted])</option>
+      <option value="pan">PAN Card</option>
+      <option value="voter">Voter ID</option>
       <option value="driving">Driving License</option>
     </select>
     
-    <label class="form-label" data-i18n="kycDocNum">Document ID Number *</label>
+    <label class="form-label">Document ID Number *</label>
     <input type="text" id="govtIdNumber" placeholder="Enter exact ID number">
     
-    <label class="form-label" data-i18n="kycDocUpload">Upload Document Image (Photo/PDF) *</label>
-    <input type="file" id="kycFile" accept="image/*,application/pdf" style="padding: 10px 0; color: var(--text);">
+    <label class="form-label">Business/Farm Name (Optional)</label>
+    <input type="text" id="businessName" placeholder="Official Business Name">
     
-    <button class="modal-submit" id="kycSubmitBtn" onclick="saveProfile()" data-i18n="kycSubmitBtn">🔐 Submit for Secure KYC</button>
+    <label class="form-label">State of Residence *</label>
+    <select id="userState">
+      <option value="">-- Select State --</option>
+      <option>Uttar Pradesh</option><option>Maharashtra</option><option>Punjab</option>
+      <option>Haryana</option><option>Rajasthan</option><option>Madhya Pradesh</option>
+      <option>Other</option>
+    </select>
+    <button class="modal-submit" onclick="saveProfile()">🔐 Submit for Secure KYC</button>
   </div>
 </div>
 
-<div class="modal-overlay" id="postModal">
-  <div class="modal">
-    <button class="close-btn" onclick="closeModal('postModal')">✕</button>
-    <div class="modal-title" data-i18n="postTitle">Post a Demand</div>
-    <label class="form-label" data-i18n="postCrop">Crop / Product *</label>
-    <input type="text" id="productName" placeholder="e.g. Aloe Vera, Wheat...">
-    <label class="form-label" data-i18n="postQty">Quantity Required *</label>
-    <input type="text" id="quantity" placeholder="e.g. 2 Tons, 500 KG">
-    <label class="form-label" data-i18n="postLoc">Location *</label>
-    <input type="text" id="location" placeholder="City or Country">
-    <button class="modal-submit" id="submitPostBtn" onclick="submitPost()" style="margin-top:16px;" data-i18n="postSubmitBtn">🚀 Post Demand</button>
+<div class="full-chat" id="fullChat">
+  <div class="chat-nav">
+    <button class="chat-back" onclick="closeFullChat()">←</button>
+    <div class="chat-nav-avatar" id="chatNavAvatar">?</div>
+    <div>
+      <div class="chat-nav-name" id="chatNavName">Chat</div>
+      <div style="color:rgba(255,255,255,.7);font-size:12px">End-to-End Encrypted</div>
+    </div>
   </div>
-</div>
-
-<div class="modal-overlay" id="contractModal">
-  <div class="modal">
-    <button class="close-btn" onclick="closeModal('contractModal')">✕</button>
-    <div class="modal-title">Draft New Contract</div>
-    <p style="font-size:12px; color:var(--gray); margin-bottom:16px;">Lock escrow between Buyer and Farmer. (Managed by Expert)</p>
-    <label class="form-label">Buyer Email or ID *</label>
-    <input type="text" id="contractBuyer" placeholder="e.g. buyer@global.com">
-    <label class="form-label">Farmer Email or ID *</label>
-    <input type="text" id="contractFarmer" placeholder="e.g. farmer@local.in">
-    <label class="form-label">Crop & Demand Details *</label>
-    <input type="text" id="contractCrop" placeholder="e.g. 10 Tons Premium Wheat">
-    <label class="form-label">Escrow Amount (₹ / $) *</label>
-    <input type="number" id="contractAmount" placeholder="e.g. 50000">
-    <button class="modal-submit" id="submitContractBtn" onclick="createContract()" style="margin-top: 16px;">🔒 Lock in Escrow</button>
+  <div class="chat-body" id="chatBody"></div>
+  <div class="chat-input-area">
+    <input type="text" id="chatInputFull" placeholder="Type message..." onkeypress="if(event.key==='Enter')sendMsg()">
+    <button class="ai-send" onclick="sendMsg()">➤</button>
   </div>
-</div>
-
-<div class="bottom-nav">
-  <div class="nav-item active" onclick="showPage('home')" id="navHome"><span style="font-size:20px;">🏠</span><br>Home</div>
-  <div class="nav-item" onclick="showPage('contracts')" id="navContracts"><span style="font-size:20px;">🤝</span><br>Contracts</div>
-  <div class="nav-item" onclick="showPage('profile')" id="navProfile"><span style="font-size:20px;">👤</span><br>Profile</div>
 </div>
 
 <script src="app.js"></script>
@@ -181,61 +268,41 @@
   const dict = {
     en: {
       loginBtn: "👤 Login",
-      tabMarket: "📱 Market",
-      tabContracts: "🤝 Contracts",
-      tabExperts: "👨‍🌾 Experts",
-      tabChats: "💬 Chats",
-      heroTitle: "Global Bulk Demand",
-      heroSub: "Connecting International Buyers with Verified Farmers",
+      heroTitle: "What do you want to buy?",
+      heroSub: "In bulk — Direct from verified farmers",
       searchBtn: "Search",
-      liveDemands: "📋 Live Market Demands",
+      tabFeed: "📱 Feed",
+      tabLearn: "📚 Learn",
+      tabExperts: "👨‍🌾 Experts",
+      tabFarmers: "🌾 Farmers",
+      tabBuyers: "🛒 Buyers",
+      tabChats: "💬 Chats",
+      hotCats: "🔥 Hot Categories",
+      liveDemands: "📋 Market Demands",
       postDemandBtn: "+ Post Demand",
-      activeContracts: "🤝 Active Contracts",
-      contractSub: "Managed by Experts. Escrow payments secured.",
-      loginViewContracts: "Login to view your secure contracts.",
-      authTitle: "Secure Access",
-      authLogin: "Login",
-      authSignup: "Create Account",
-      authMainBtnTxt: "Secure Login",
-      kycTitle: "International KYC",
-      kycDocType: "Select Document Type *",
-      kycDocNum: "Document ID Number *",
-      kycDocUpload: "Upload Document Image (Photo/PDF) *",
-      kycSubmitBtn: "🔐 Submit for Secure KYC",
-      postTitle: "Post a Demand",
-      postCrop: "Crop / Product *",
-      postQty: "Quantity Required *",
-      postLoc: "Location *",
-      postSubmitBtn: "🚀 Post Demand"
+      navHome: "Home",
+      navLearn: "Learn",
+      navChat: "Chat",
+      navProfile: "Profile"
     },
     hi: {
       loginBtn: "👤 Login Karein",
-      tabMarket: "📱 Bazaar",
-      tabContracts: "🤝 Samjhaute (Contracts)",
-      tabExperts: "👨‍🌾 Experts",
-      tabChats: "💬 Chats",
-      heroTitle: "Global Thok (Bulk) Demand",
-      heroSub: "International Buyers ko Verified Farmers se jodna",
+      heroTitle: "Aap kya kharidna chahte hain?",
+      heroSub: "Thok (Bulk) mein — Seedha verified kisano se",
       searchBtn: "Khojein",
-      liveDemands: "📋 Live Bazaar Demands",
+      tabFeed: "📱 Feed",
+      tabLearn: "📚 Seekhein",
+      tabExperts: "👨‍🌾 Experts",
+      tabFarmers: "🌾 Kisan",
+      tabBuyers: "🛒 Kharidar",
+      tabChats: "💬 Chats",
+      hotCats: "🔥 Mashhoor Categories",
+      liveDemands: "📋 Bazaar Demands",
       postDemandBtn: "+ Demand Daalein",
-      activeContracts: "🤝 Active Contracts",
-      contractSub: "Experts dwara managed. Escrow payments surakshit hain.",
-      loginViewContracts: "Apne contracts dekhne ke liye Login karein.",
-      authTitle: "Secure Login",
-      authLogin: "Login Karein",
-      authSignup: "Naya Account Banayein",
-      authMainBtnTxt: "Aage Badhein",
-      kycTitle: "Zaroori KYC (Verification)",
-      kycDocType: "Document Select Karein *",
-      kycDocNum: "Document ID Number Daalein *",
-      kycDocUpload: "Apne Document ki Photo daalein *",
-      kycSubmitBtn: "🔐 KYC Verify Karein",
-      postTitle: "Nayi Demand Daalein",
-      postCrop: "Fasal / Product ka naam *",
-      postQty: "Kitni Quantity chahiye? *",
-      postLoc: "Location (Shehar ya Desh) *",
-      postSubmitBtn: "🚀 Demand Post Karein"
+      navHome: "Home",
+      navLearn: "Seekhein",
+      navChat: "Chat",
+      navProfile: "Profile"
     }
   };
 
