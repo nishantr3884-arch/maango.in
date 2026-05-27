@@ -144,25 +144,69 @@ function processAuth() {
     }
 }
 
-// ===== 6. PROFILE & KYC LOGIC =====
+// ===== 6. PROFILE & SECURE VAULT KYC LOGIC =====
 function saveProfile() {
     const govtIdType = document.getElementById('govtIdType').value;
     const govtIdNumber = document.getElementById('govtIdNumber').value.trim();
+    const fileInput = document.getElementById('kycFile');
     
-    if(!govtIdType || !govtIdNumber) return showToast('⚠️ Required KYC fields missing!');
+    if(!govtIdType || !govtIdNumber || fileInput.files.length === 0) {
+        return showToast('⚠️ Required KYC fields or Document file missing!');
+    }
     
-    db.collection('users').doc(currentUser.uid).set({
-        govtIdType: govtIdType,
-        govtIdNumber: govtIdNumber,
-        govtIdVerified: true
-    }, {merge: true}).then(() => {
-        return db.collection('users').doc(currentUser.uid).get();
-    }).then((doc) => {
-        currentUserData = doc.data();
-        closeModal('profileModal');
-        showToast('🔐 Secure KYC Data Saved!');
-        renderProfile();
-    }).catch(e => showToast('❌ Server Error'));
+    const btn = document.getElementById('kycSubmitBtn');
+    const originalText = btn.textContent;
+    btn.innerHTML = '<span class="spinner"></span> Uploading to Vault...';
+    btn.disabled = true;
+
+    const file = fileInput.files[0];
+    const reader = new FileReader();
+    
+    // File ko read karke base64 banana chalu karo
+    reader.onloadend = function() {
+        const base64String = reader.result.split(',')[1]; // Metadata saaf karo, sirf raw text lo
+        
+        // Render Backend par hit maro
+        fetch(`${BACKEND_URL}/api/users/kyc-upload`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                userId: currentUser.uid,
+                docType: govtIdType,
+                docNumber: govtIdNumber,
+                fileBase64: base64String,
+                fileName: file.name
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.error) throw new Error(data.error);
+            
+            // Sync with local Firebase for instantly updating frontend layout
+            return db.collection('users').doc(currentUser.uid).set({
+                govtIdType: govtIdType,
+                govtIdNumber: govtIdNumber,
+                govtIdVerified: true
+            }, {merge: true});
+        })
+        .then(() => {
+            if (!currentUserData) currentUserData = {};
+            currentUserData.govtIdVerified = true;
+            
+            closeModal('profileModal');
+            showToast('🔐 Secure KYC Document Uploaded & Verified!');
+            renderProfile();
+        })
+        .catch(e => {
+            showToast('❌ Upload Failed: ' + e.message);
+        })
+        .finally(() => {
+            btn.textContent = originalText;
+            btn.disabled = false;
+        });
+    };
+    
+    reader.readAsDataURL(file); // Trigger background conversion
 }
 
 function renderProfile() {
