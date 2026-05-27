@@ -211,7 +211,6 @@
     <div class="link-text" id="forgotPwdLink" style="margin-top:16px;">Forgot Password? <span onclick="resetPassword()">Reset Here</span></div>
   </div>
 </div>
-
 <div class="modal-overlay" id="profileModal">
   <div class="modal">
     <button class="close-btn" onclick="closeModal('profileModal')">✕</button>
@@ -223,7 +222,7 @@
     <label class="form-label">Select Document Type *</label>
     <select id="govtIdType">
       <option value="">-- Choose Valid ID --</option>
-      <option value="national_id">National ID ([Aadhaar Redacted])</option>
+      <option value="aadhaar">Aadhaar Card</option>
       <option value="pan">PAN Card</option>
       <option value="voter">Voter ID</option>
       <option value="driving">Driving License</option>
@@ -231,21 +230,19 @@
     
     <label class="form-label">Document ID Number *</label>
     <input type="text" id="govtIdNumber" placeholder="Enter exact ID number">
+
+    <label class="form-label">Upload Document Image (Photo/PDF) *</label>
+    <input type="file" id="kycFile" accept="image/*,application/pdf" style="padding: 10px 0; color: var(--text);">
     
     <label class="form-label">Business/Farm Name (Optional)</label>
     <input type="text" id="businessName" placeholder="Official Business Name">
+    <label class="form-label">State / Province / Region *</label>
+    <input type="text" id="userState" placeholder="e.g. Punjab, California, Tokyo...">
     
-    <label class="form-label">State of Residence *</label>
-    <select id="userState">
-      <option value="">-- Select State --</option>
-      <option>Uttar Pradesh</option><option>Maharashtra</option><option>Punjab</option>
-      <option>Haryana</option><option>Rajasthan</option><option>Madhya Pradesh</option>
-      <option>Other</option>
-    </select>
     <button class="modal-submit" onclick="saveProfile()">🔐 Submit for Secure KYC</button>
   </div>
 </div>
-
+  
 <div class="full-chat" id="fullChat">
   <div class="chat-nav">
     <button class="chat-back" onclick="closeFullChat()">←</button>
