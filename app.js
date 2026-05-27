@@ -220,13 +220,17 @@ function renderProfile() {
     const role = currentUserData ? currentUserData.userType : 'buyer';
     const roleEmoji = role === 'farmer' ? '🌾' : (role === 'expert' ? '👨‍🏫' : '🛒');
     
+    // 🚨 FIX: Naye CSS variables (--primary, --gold, --text-main, --surface) lag gaye hain
     pc.innerHTML = `
-        <div class="card" style="background: linear-gradient(135deg, var(--green), #1a5c35); color: white; border: none;">
-            <div style="font-size:24px; font-weight:900;">${currentUserData ? currentUserData.name : 'User'}</div>
-            <div style="opacity: 0.9; margin-bottom: 12px; font-size:14px;">${roleEmoji} ${role.toUpperCase()}</div>
-            ${verified ? '<span style="background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: bold;">🛡️ KYC Verified</span>' : '<button onclick="document.getElementById(\'profileModal\').classList.add(\'show\')" style="background: var(--gold); color: var(--green); border: none; padding: 6px 12px; border-radius: 8px; font-weight: bold; cursor: pointer;">⚠️ Complete KYC</button>'}
+        <div class="card" style="background: linear-gradient(135deg, var(--primary), #022c22); color: white; border: none; box-shadow: var(--shadow-lg);">
+            <div style="font-size:24px; font-weight:900; margin-bottom:4px;">${currentUserData ? currentUserData.name : 'User'}</div>
+            <div style="opacity: 0.9; margin-bottom: 16px; font-size:14px; text-transform: uppercase; letter-spacing: 1px;">${roleEmoji} ${role}</div>
             
-            <button onclick="auth.signOut().then(()=>showPage('home'))" style="display:block; width:100%; margin-top: 20px; background: white; color: var(--text); border: none; padding: 10px; border-radius: 12px; font-weight: bold; cursor: pointer;">🚪 Logout Securely</button>
+            ${verified 
+                ? '<span style="background: rgba(255,255,255,0.2); padding: 6px 12px; border-radius: 8px; font-size: 13px; font-weight: bold; backdrop-filter: blur(4px);">🛡️ KYC Verified</span>' 
+                : '<button onclick="document.getElementById(\'profileModal\').classList.add(\'show\')" style="background: var(--gold); color: white; border: none; padding: 8px 16px; border-radius: 8px; font-weight: bold; cursor: pointer; box-shadow: var(--shadow-sm);">⚠️ Complete KYC</button>'}
+            
+            <button onclick="auth.signOut().then(()=>showPage('home'))" style="display:block; width:100%; margin-top: 24px; background: var(--surface); color: var(--text-main); border: none; padding: 12px; border-radius: 12px; font-weight: bold; cursor: pointer; transition: 0.2s;">🚪 Logout Securely</button>
         </div>
     `;
 }
@@ -406,22 +410,23 @@ function loadContracts() {
 
         let html = expertBtn; 
 
+        // 🚨 FIX: Contracts ki styling ab CSS Premium Theme ke saath sync ho gayi hai
         data.forEach(contract => {
             html += `
                 <div class="card" style="border-left: 4px solid var(--gold);">
-                    <div style="font-size:12px; color:var(--gray); font-weight:bold;">Contract ID: #${contract.contract_id}</div>
-                    <div style="font-weight:900; font-size:18px; margin-top:4px; color:var(--green);">${contract.crop_details}</div>
+                    <div style="font-size:12px; color:var(--text-muted); font-weight:bold;">Contract ID: #${contract.contract_id}</div>
+                    <div style="font-weight:900; font-size:18px; margin-top:4px; color:var(--primary);">${contract.crop_details}</div>
                     
                     <div style="margin-top:12px; display:flex; justify-content:space-between; align-items:center;">
-                        <span style="background:#e8f5ee; color:var(--green); padding:6px 10px; border-radius:8px; font-size:12px; font-weight:800; border: 1px solid var(--green2);">
+                        <span style="background:#ecfdf5; color:var(--primary); padding:6px 10px; border-radius:8px; font-size:12px; font-weight:800; border: 1px solid #a7f3d0;">
                             ${contract.status}
                         </span>
-                        <span style="font-weight:900; color:var(--green2); font-size:18px;">
+                        <span style="font-weight:900; color:var(--primary-hover); font-size:18px;">
                             ₹${contract.escrow_amount}
                         </span>
                     </div>
                     
-                    <div style="margin-top:16px; font-size:13px; color:var(--text); background: var(--bg); padding: 12px; border-radius: 12px;">
+                    <div style="margin-top:16px; font-size:13px; color:var(--text-main); background: var(--bg-color); padding: 12px; border-radius: 12px; border: 1px solid var(--border-light);">
                         <div style="margin-bottom:4px;">👨‍🏫 <strong>Expert:</strong> ${contract.expert_name}</div>
                         <div style="margin-bottom:4px;">🛒 <strong>Buyer:</strong> ${contract.buyer_ref}</div>
                         <div>🌾 <strong>Farmer:</strong> ${contract.farmer_ref}</div>
