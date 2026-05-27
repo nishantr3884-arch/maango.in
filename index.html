@@ -16,10 +16,10 @@
 <div class="toast" id="toast"></div>
 
 <nav>
-  <div class="logo">maan<span>go</span></div>
+  <div class="logo notranslate">maan<span>go</span></div>
   <div class="nav-right" style="display:flex; gap:10px; align-items:center;">
     <div id="google_translate_element"></div>
-    <button class="btn-nav" id="navAuthBtn" onclick="handleNavBtn()">👤 Login</button>
+    <button class="btn-nav notranslate" id="navAuthBtn" onclick="handleNavBtn()">👤 Login</button>
   </div>
 </nav>
 
@@ -101,7 +101,7 @@
         <div class="type-btn" id="typeFarmer" onclick="selectType('farmer')">🌾 Farmer</div>
         <div class="type-btn" id="typeExpert" onclick="selectType('expert')">👨‍🏫 Expert</div>
       </div>
-      <input type="text" id="authName" placeholder="Full Legal Name *">
+      <input type="text" id="authName" class="notranslate" placeholder="Full Legal Name *">
       <input type="text" id="authCountry" placeholder="Country *">
     </div>
 
@@ -116,16 +116,22 @@
   <div class="modal">
     <button class="close-btn" onclick="closeModal('profileModal')">✕</button>
     <div class="modal-title">International KYC</div>
+    
     <label class="form-label">Select Document Type *</label>
     <select id="govtIdType">
       <option value="">-- Choose Valid ID --</option>
-      <option value="national_id">National ID ([Aadhaar Redacted] / SSN)</option>
+      <option value="national_id">National ID (Aadhaar / SSN)</option>
       <option value="passport">Passport</option>
       <option value="driving">Driving License</option>
     </select>
+    
     <label class="form-label">Document ID Number *</label>
     <input type="text" id="govtIdNumber" placeholder="Enter exact ID number">
-    <button class="modal-submit" onclick="saveProfile()">🔐 Submit for Secure KYC</button>
+    
+    <label class="form-label">Upload Document Image (Photo/PDF) *</label>
+    <input type="file" id="kycFile" accept="image/*,application/pdf" style="padding: 10px 0; color: var(--text);">
+    
+    <button class="modal-submit" id="kycSubmitBtn" onclick="saveProfile()">🔐 Submit for Secure KYC</button>
   </div>
 </div>
 
@@ -172,6 +178,8 @@
   function googleTranslateElementInit() {
     new google.translate.TranslateElement({
       pageLanguage: 'en', 
+      // 🚨 ENTERPRISE FIX: Sirf select ki hui top languages hi dikhengi ab!
+      includedLanguages: 'en,hi,es,zh-CN,ar,fr,hi-en', 
       layout: google.translate.TranslateElement.InlineLayout.SIMPLE
     }, 'google_translate_element');
   }
