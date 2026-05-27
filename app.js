@@ -69,7 +69,7 @@ function showToast(msg) {
     setTimeout(() => t.style.display='none', 3000);
 }
 
-// ===== 5. AUTHENTICATION LOGIC (HYBRID: FIREBASE + RENDER BACKEND) =====
+// ===== 5. UPGRADED AUTHENTICATION (With Strict Email Verification) =====
 function switchAuthMode(mode) {
     authMode = mode;
     document.getElementById('tabLogin').classList.toggle('active', mode === 'login');
@@ -105,20 +105,17 @@ function processAuth() {
         }
 
         auth.createUserWithEmailAndPassword(email, pass).then((cred) => {
-            // Data ko Custom PostgreSQL backend mein bhejo!
+            // 🚨 STRICT EMAIL VERIFICATION TRIGGER 🚨
+            cred.user.sendEmailVerification();
+            
             return fetch(`${BACKEND_URL}/api/users/register`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    id: cred.user.uid,
-                    name: name,
-                    email: email,
-                    country: country,
-                    user_type: selectedType
+                    id: cred.user.uid, name: name, email: email, country: country, user_type: selectedType
                 })
             }).then(res => {
                 if(!res.ok) throw new Error("Database provisioning failed");
-                // Frontend profile rendering fast rakhne ke liye Firebase me bhi save kar do
                 return db.collection('users').doc(cred.user.uid).set({
                     name: name, email: email, country: country, userType: selectedType,
                     govtIdVerified: false,
@@ -126,15 +123,22 @@ function processAuth() {
                 });
             });
         }).then(() => {
+            // Force sign out immediately so they have to verify email before accessing dashboard
+            auth.signOut(); 
             closeModal('authModal');
-            showToast('✅ Enterprise Account Provisioned!');
+            showToast('📩 Verification Link Sent! Please check your Email to login.');
         }).catch(e => showToast('❌ ' + e.message)).finally(() => {
             btn.textContent = originalText; btn.disabled = false;
         });
     } else {
-        auth.signInWithEmailAndPassword(email, pass).then(() => {
+        // LOGIN FLOW WITH VERIFICATION CHECK
+        auth.signInWithEmailAndPassword(email, pass).then((cred) => {
+            if (!cred.user.emailVerified) {
+                auth.signOut(); // Kick them out if not verified
+                throw new Error("Please verify your email address first.");
+            }
             closeModal('authModal'); showToast('✅ Secure Login Successful!');
-        }).catch(e => showToast('❌ Invalid Credentials')).finally(() => {
+        }).catch(e => showToast('❌ ' + e.message)).finally(() => {
             btn.textContent = originalText; btn.disabled = false;
         });
     }
