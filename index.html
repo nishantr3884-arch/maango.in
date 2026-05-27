@@ -18,10 +18,7 @@
 <nav>
   <div class="logo">maan<span>go</span></div>
   <div class="nav-right" style="display:flex; gap:10px; align-items:center;">
-    <select id="currencySelect" style="background:#fff; border:none; padding:4px 8px; border-radius:12px; font-size:12px; outline:none;">
-        <option value="INR">🇮🇳 INR</option>
-        <option value="USD">🇺🇸 USD</option>
-    </select>
+    <div id="google_translate_element"></div>
     <button class="btn-nav" id="navAuthBtn" onclick="handleNavBtn()">👤 Login</button>
   </div>
 </nav>
@@ -170,5 +167,16 @@
 </div>
 
 <script src="app.js"></script>
+
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement({
+      pageLanguage: 'en', 
+      layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+    }, 'google_translate_element');
+  }
+</script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
 </body>
 </html>
