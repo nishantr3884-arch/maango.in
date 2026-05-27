@@ -16,47 +16,50 @@
 <div class="toast" id="toast"></div>
 
 <nav>
-  <div class="logo notranslate">maan<span>go</span></div>
+  <div class="logo">maan<span>go</span></div>
   <div class="nav-right" style="display:flex; gap:10px; align-items:center;">
-    <div id="google_translate_element"></div>
-    <button class="btn-nav notranslate" id="navAuthBtn" onclick="handleNavBtn()">👤 Login</button>
+    <select id="langToggle" onchange="switchLanguage(this.value)" style="background:#f1f5f9; border:1px solid #e2e8f0; padding:6px 10px; border-radius:12px; font-size:13px; font-weight:600; outline:none; cursor:pointer; color:var(--text);">
+        <option value="en">🇬🇧 English</option>
+        <option value="hi">🇮🇳 Hinglish</option>
+    </select>
+    <button class="btn-nav" id="navAuthBtn" onclick="handleNavBtn()" data-i18n="loginBtn">👤 Login</button>
   </div>
 </nav>
 
 <div class="tabs" id="mainTabs">
-  <div class="tab active" onclick="switchTab(this);showPage('home')">📱 Market</div>
-  <div class="tab" onclick="switchTab(this);showPage('contracts')">🤝 Contracts</div>
-  <div class="tab" onclick="switchTab(this);showPage('expert')">👨‍🌾 Experts</div>
-  <div class="tab" onclick="switchTab(this);showPage('chat')">💬 Chats</div>
+  <div class="tab active" onclick="switchTab(this);showPage('home')" data-i18n="tabMarket">📱 Market</div>
+  <div class="tab" onclick="switchTab(this);showPage('contracts')" data-i18n="tabContracts">🤝 Contracts</div>
+  <div class="tab" onclick="switchTab(this);showPage('expert')" data-i18n="tabExperts">👨‍🌾 Experts</div>
+  <div class="tab" onclick="switchTab(this);showPage('chat')" data-i18n="tabChats">💬 Chats</div>
 </div>
 
 <div class="page active" id="homePage">
   <div class="search-section">
-    <h2>Global Bulk Demand</h2>
-    <p>Connecting International Buyers with Verified Farmers</p>
+    <h2 data-i18n="heroTitle">Global Bulk Demand</h2>
+    <p data-i18n="heroSub">Connecting International Buyers with Verified Farmers</p>
     <div class="search-bar">
       <input type="text" id="searchInput" placeholder="Search Wheat, Aloe Vera..." oninput="filterCards()">
-      <button class="sch-btn" onclick="filterCards()">Search</button>
+      <button class="sch-btn" onclick="filterCards()" data-i18n="searchBtn">Search</button>
     </div>
   </div>
   
   <div class="feed">
     <div class="feed-header">
-      <div class="feed-title">📋 Live Market Demands</div>
-      <button class="post-btn" onclick="showPostModal()">+ Post Demand</button>
+      <div class="feed-title" data-i18n="liveDemands">📋 Live Market Demands</div>
+      <button class="post-btn" onclick="showPostModal()" data-i18n="postDemandBtn">+ Post Demand</button>
     </div>
     <div id="feedContainer">
-      <div class="empty-state"><span class="spinner"></span><p>Loading global market data...</p></div>
+      <div class="empty-state"><span class="spinner"></span><p>Loading market data...</p></div>
     </div>
   </div>
 </div>
 
 <div class="page" id="contractsPage">
   <div class="feed">
-    <div class="feed-header"><div class="feed-title">🤝 Active Contracts</div></div>
-    <p style="font-size:13px;color:var(--gray);margin-bottom:16px">Managed by Experts. Escrow payments secured.</p>
+    <div class="feed-header"><div class="feed-title" data-i18n="activeContracts">🤝 Active Contracts</div></div>
+    <p style="font-size:13px;color:var(--gray);margin-bottom:16px" data-i18n="contractSub">Managed by Experts. Escrow payments secured.</p>
     <div id="contractsContainer">
-      <div class="empty-state"><div>🔐</div><p>Login to view your secure contracts.</p></div>
+      <div class="empty-state"><div>🔐</div><p data-i18n="loginViewContracts">Login to view your secure contracts.</p></div>
     </div>
   </div>
 </div>
@@ -88,11 +91,11 @@
 <div class="modal-overlay" id="authModal">
   <div class="modal">
     <button class="close-btn" onclick="closeModal('authModal')">✕</button>
-    <div class="modal-title" id="authTitle">Secure Access</div>
+    <div class="modal-title" id="authTitle" data-i18n="authTitle">Secure Access</div>
     
     <div class="auth-tabs">
-      <div class="auth-tab active" id="tabLogin" onclick="switchAuthMode('login')">Login</div>
-      <div class="auth-tab" id="tabSignup" onclick="switchAuthMode('signup')">Create Account</div>
+      <div class="auth-tab active" id="tabLogin" onclick="switchAuthMode('login')" data-i18n="authLogin">Login</div>
+      <div class="auth-tab" id="tabSignup" onclick="switchAuthMode('signup')" data-i18n="authSignup">Create Account</div>
     </div>
 
     <div id="signupExtraFields" style="display:none; margin-top:8px;">
@@ -101,23 +104,23 @@
         <div class="type-btn" id="typeFarmer" onclick="selectType('farmer')">🌾 Farmer</div>
         <div class="type-btn" id="typeExpert" onclick="selectType('expert')">👨‍🏫 Expert</div>
       </div>
-      <input type="text" id="authName" class="notranslate" placeholder="Full Legal Name *">
+      <input type="text" id="authName" placeholder="Full Legal Name *">
       <input type="text" id="authCountry" placeholder="Country *">
     </div>
 
     <input type="email" id="authEmail" placeholder="Email Address *">
     <input type="password" id="authPassword" placeholder="Password (Min 6 chars) *">
 
-    <button class="modal-submit" id="authMainBtn" onclick="processAuth()">Secure Login</button>
+    <button class="modal-submit" id="authMainBtn" onclick="processAuth()" data-i18n="authMainBtnTxt">Secure Login</button>
   </div>
 </div>
 
 <div class="modal-overlay" id="profileModal">
   <div class="modal">
     <button class="close-btn" onclick="closeModal('profileModal')">✕</button>
-    <div class="modal-title">International KYC</div>
+    <div class="modal-title" data-i18n="kycTitle">International KYC</div>
     
-    <label class="form-label">Select Document Type *</label>
+    <label class="form-label" data-i18n="kycDocType">Select Document Type *</label>
     <select id="govtIdType">
       <option value="">-- Choose Valid ID --</option>
       <option value="national_id">National ID (Aadhaar / SSN)</option>
@@ -125,27 +128,27 @@
       <option value="driving">Driving License</option>
     </select>
     
-    <label class="form-label">Document ID Number *</label>
+    <label class="form-label" data-i18n="kycDocNum">Document ID Number *</label>
     <input type="text" id="govtIdNumber" placeholder="Enter exact ID number">
     
-    <label class="form-label">Upload Document Image (Photo/PDF) *</label>
+    <label class="form-label" data-i18n="kycDocUpload">Upload Document Image (Photo/PDF) *</label>
     <input type="file" id="kycFile" accept="image/*,application/pdf" style="padding: 10px 0; color: var(--text);">
     
-    <button class="modal-submit" id="kycSubmitBtn" onclick="saveProfile()">🔐 Submit for Secure KYC</button>
+    <button class="modal-submit" id="kycSubmitBtn" onclick="saveProfile()" data-i18n="kycSubmitBtn">🔐 Submit for Secure KYC</button>
   </div>
 </div>
 
 <div class="modal-overlay" id="postModal">
   <div class="modal">
     <button class="close-btn" onclick="closeModal('postModal')">✕</button>
-    <div class="modal-title">Post a Demand</div>
-    <label class="form-label">Crop / Product *</label>
+    <div class="modal-title" data-i18n="postTitle">Post a Demand</div>
+    <label class="form-label" data-i18n="postCrop">Crop / Product *</label>
     <input type="text" id="productName" placeholder="e.g. Aloe Vera, Wheat...">
-    <label class="form-label">Quantity Required *</label>
+    <label class="form-label" data-i18n="postQty">Quantity Required *</label>
     <input type="text" id="quantity" placeholder="e.g. 2 Tons, 500 KG">
-    <label class="form-label">Location *</label>
+    <label class="form-label" data-i18n="postLoc">Location *</label>
     <input type="text" id="location" placeholder="City or Country">
-    <button class="modal-submit" id="submitPostBtn" onclick="submitPost()" style="margin-top:16px;">🚀 Post Demand</button>
+    <button class="modal-submit" id="submitPostBtn" onclick="submitPost()" style="margin-top:16px;" data-i18n="postSubmitBtn">🚀 Post Demand</button>
   </div>
 </div>
 
@@ -174,17 +177,78 @@
 
 <script src="app.js"></script>
 
-<script type="text/javascript">
-  function googleTranslateElementInit() {
-    new google.translate.TranslateElement({
-      pageLanguage: 'en', 
-      // 🚨 ENTERPRISE FIX: Sirf select ki hui top languages hi dikhengi ab!
-      includedLanguages: 'en,hi,es,zh-CN,ar,fr,hi-en', 
-      layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-    }, 'google_translate_element');
+<script>
+  const dict = {
+    en: {
+      loginBtn: "👤 Login",
+      tabMarket: "📱 Market",
+      tabContracts: "🤝 Contracts",
+      tabExperts: "👨‍🌾 Experts",
+      tabChats: "💬 Chats",
+      heroTitle: "Global Bulk Demand",
+      heroSub: "Connecting International Buyers with Verified Farmers",
+      searchBtn: "Search",
+      liveDemands: "📋 Live Market Demands",
+      postDemandBtn: "+ Post Demand",
+      activeContracts: "🤝 Active Contracts",
+      contractSub: "Managed by Experts. Escrow payments secured.",
+      loginViewContracts: "Login to view your secure contracts.",
+      authTitle: "Secure Access",
+      authLogin: "Login",
+      authSignup: "Create Account",
+      authMainBtnTxt: "Secure Login",
+      kycTitle: "International KYC",
+      kycDocType: "Select Document Type *",
+      kycDocNum: "Document ID Number *",
+      kycDocUpload: "Upload Document Image (Photo/PDF) *",
+      kycSubmitBtn: "🔐 Submit for Secure KYC",
+      postTitle: "Post a Demand",
+      postCrop: "Crop / Product *",
+      postQty: "Quantity Required *",
+      postLoc: "Location *",
+      postSubmitBtn: "🚀 Post Demand"
+    },
+    hi: {
+      loginBtn: "👤 Login Karein",
+      tabMarket: "📱 Bazaar",
+      tabContracts: "🤝 Samjhaute (Contracts)",
+      tabExperts: "👨‍🌾 Experts",
+      tabChats: "💬 Chats",
+      heroTitle: "Global Thok (Bulk) Demand",
+      heroSub: "International Buyers ko Verified Farmers se jodna",
+      searchBtn: "Khojein",
+      liveDemands: "📋 Live Bazaar Demands",
+      postDemandBtn: "+ Demand Daalein",
+      activeContracts: "🤝 Active Contracts",
+      contractSub: "Experts dwara managed. Escrow payments surakshit hain.",
+      loginViewContracts: "Apne contracts dekhne ke liye Login karein.",
+      authTitle: "Secure Login",
+      authLogin: "Login Karein",
+      authSignup: "Naya Account Banayein",
+      authMainBtnTxt: "Aage Badhein",
+      kycTitle: "Zaroori KYC (Verification)",
+      kycDocType: "Document Select Karein *",
+      kycDocNum: "Document ID Number Daalein *",
+      kycDocUpload: "Apne Document ki Photo daalein *",
+      kycSubmitBtn: "🔐 KYC Verify Karein",
+      postTitle: "Nayi Demand Daalein",
+      postCrop: "Fasal / Product ka naam *",
+      postQty: "Kitni Quantity chahiye? *",
+      postLoc: "Location (Shehar ya Desh) *",
+      postSubmitBtn: "🚀 Demand Post Karein"
+    }
+  };
+
+  function switchLanguage(lang) {
+    const elements = document.querySelectorAll('[data-i18n]');
+    elements.forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if(dict[lang] && dict[lang][key]) {
+        el.innerText = dict[lang][key];
+      }
+    });
   }
 </script>
-<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
 </body>
 </html>
