@@ -273,9 +273,22 @@ function renderCards(data) {
     c.innerHTML = html;
 }
 
+// 🚨 SEARCH FIX (Correct Placement) 🚨
 function filterCards() {
-    const q = document.getElementById('searchInput').value.toLowerCase();
-    renderCards(q ? allListings.filter(l => (l.product||'').toLowerCase().includes(q) || (l.location||'').toLowerCase().includes(q)) : allListings);
+    const query = document.getElementById('searchInput').value.toLowerCase().trim();
+    
+    if (!query || query === "") {
+        renderCards(allListings);
+        return;
+    }
+    
+    const filteredData = allListings.filter(item => {
+        const prod = (item.product || '').toLowerCase();
+        const loc = (item.location || '').toLowerCase();
+        return prod.includes(query) || loc.includes(query);
+    });
+    
+    renderCards(filteredData);
 }
 
 function showPostModal() {
