@@ -28,7 +28,7 @@
 
 <div class="tabs" id="mainTabs">
   <div class="tab active" onclick="switchTab(this);showPage('home')">📱 Market</div>
-  <div class="tab" onclick="switchTab(this);showPage('contracts')">🤝 Contracts (Escrow)</div>
+  <div class="tab" onclick="switchTab(this);showPage('contracts')">🤝 Contracts</div>
   <div class="tab" onclick="switchTab(this);showPage('expert')">👨‍🌾 Experts</div>
   <div class="tab" onclick="switchTab(this);showPage('chat')">💬 Chats</div>
 </div>
@@ -61,6 +61,30 @@
     <div id="contractsContainer">
       <div class="empty-state"><div>🔐</div><p>Login to view your secure contracts.</p></div>
     </div>
+  </div>
+</div>
+
+<div class="page" id="expertPage">
+  <div class="feed">
+    <div class="feed-header"><div class="feed-title">👨‍🏫 Verified Experts</div></div>
+    <div id="expertList">
+        <div class="empty-state"><p>Loading Experts...</p></div>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="chatPage">
+  <div class="feed">
+    <div class="feed-header"><div class="feed-title">💬 Messages</div></div>
+    <div id="chatListContainer">
+        <div class="empty-state"><div>🔒</div><p>Login to view your conversations.</p></div>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="profilePage">
+  <div class="feed" id="profileContent">
+    <div class="empty-state"><div>👤</div><p>Please login securely.</p></div>
   </div>
 </div>
 
@@ -108,31 +132,41 @@
   </div>
 </div>
 
-<div class="bottom-nav">
-  <div class="nav-item active" onclick="showPage('home')" id="navHome"><span>Home</span></div>
-  <div class="nav-item" onclick="showPage('contracts')" id="navContracts"><span>Contracts</span></div>
-  <div class="nav-item" onclick="showPage('profile')" id="navProfile"><span>Profile</span></div>
+<div class="modal-overlay" id="postModal">
+  <div class="modal">
+    <button class="close-btn" onclick="closeModal('postModal')">✕</button>
+    <div class="modal-title">Post a Demand</div>
+    <label class="form-label">Crop / Product *</label>
+    <input type="text" id="productName" placeholder="e.g. Aloe Vera, Wheat...">
+    <label class="form-label">Quantity Required *</label>
+    <input type="text" id="quantity" placeholder="e.g. 2 Tons, 500 KG">
+    <label class="form-label">Location *</label>
+    <input type="text" id="location" placeholder="City or Country">
+    <button class="modal-submit" id="submitPostBtn" onclick="submitPost()" style="margin-top:16px;">🚀 Post Demand</button>
+  </div>
 </div>
+
 <div class="modal-overlay" id="contractModal">
   <div class="modal">
     <button class="close-btn" onclick="closeModal('contractModal')">✕</button>
     <div class="modal-title">Draft New Contract</div>
     <p style="font-size:12px; color:var(--gray); margin-bottom:16px;">Lock escrow between Buyer and Farmer. (Managed by Expert)</p>
-
     <label class="form-label">Buyer Email or ID *</label>
     <input type="text" id="contractBuyer" placeholder="e.g. buyer@global.com">
-
     <label class="form-label">Farmer Email or ID *</label>
     <input type="text" id="contractFarmer" placeholder="e.g. farmer@local.in">
-
     <label class="form-label">Crop & Demand Details *</label>
     <input type="text" id="contractCrop" placeholder="e.g. 10 Tons Premium Wheat">
-
     <label class="form-label">Escrow Amount (₹ / $) *</label>
     <input type="number" id="contractAmount" placeholder="e.g. 50000">
-
     <button class="modal-submit" id="submitContractBtn" onclick="createContract()" style="margin-top: 16px;">🔒 Lock in Escrow</button>
   </div>
+</div>
+
+<div class="bottom-nav">
+  <div class="nav-item active" onclick="showPage('home')" id="navHome"><span style="font-size:20px;">🏠</span><br>Home</div>
+  <div class="nav-item" onclick="showPage('contracts')" id="navContracts"><span style="font-size:20px;">🤝</span><br>Contracts</div>
+  <div class="nav-item" onclick="showPage('profile')" id="navProfile"><span style="font-size:20px;">👤</span><br>Profile</div>
 </div>
 
 <script src="app.js"></script>
