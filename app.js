@@ -1,4 +1,4 @@
-// ===== 1. FIREBASE INITIALIZATION =====
+// ===== 1. FIREBASE INITIALIZATION & BACKEND URL =====
 const firebaseConfig = {
     apiKey: "AIzaSyAikQe8asrbdh7BWmPKLu9HDCNg1J9tqr4", // Warning: In production, hide this!
     authDomain: "maango-9c803.firebaseapp.com",
@@ -11,6 +11,9 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
+
+// 🚀 TERA LIVE CUSTOM BACKEND SERVER URL 
+const BACKEND_URL = "https://maango-backend.onrender.com";
 
 // ===== 2. GLOBAL STATE =====
 let currentUser = null;
@@ -27,14 +30,14 @@ auth.onAuthStateChanged((user) => {
         db.collection('users').doc(user.uid).get().then((doc) => {
             currentUserData = doc.exists ? doc.data() : null;
             renderProfile();
-            loadContracts(); // Load escrow contracts if logged in
+            loadContracts(); // Load escrow contracts from Custom Backend
         });
     } else {
         document.getElementById('navAuthBtn').textContent = "👤 Login";
         currentUserData = null;
         renderProfile();
     }
-    loadListings(); // Hamesha Market Feed load karo
+    loadListings(); 
 });
 
 // ===== 4. NAVIGATION LOGIC =====
@@ -66,7 +69,7 @@ function showToast(msg) {
     setTimeout(() => t.style.display='none', 3000);
 }
 
-// ===== 5. AUTHENTICATION LOGIC =====
+// ===== 5. AUTHENTICATION LOGIC (HYBRID: FIREBASE + RENDER BACKEND) =====
 function switchAuthMode(mode) {
     authMode = mode;
     document.getElementById('tabLogin').classList.toggle('active', mode === 'login');
@@ -87,26 +90,53 @@ function processAuth() {
     const email = document.getElementById('authEmail').value.trim();
     const pass = document.getElementById('authPassword').value.trim();
     if (!email || !pass) return showToast('⚠️ Email and Password required.');
+
+    const btn = document.getElementById('authMainBtn');
+    const originalText = btn.textContent;
+    btn.innerHTML = '<span class="spinner"></span> Processing...';
+    btn.disabled = true;
   
     if (authMode === 'signup') {
         const name = document.getElementById('authName').value.trim();
         const country = document.getElementById('authCountry').value.trim();
-        if(!name || !country) return showToast('⚠️ Name and Country required.');
+        if(!name || !country) {
+            btn.textContent = originalText; btn.disabled = false;
+            return showToast('⚠️ Name and Country required.');
+        }
 
         auth.createUserWithEmailAndPassword(email, pass).then((cred) => {
-            return db.collection('users').doc(cred.user.uid).set({
-                name: name, email: email, country: country, userType: selectedType,
-                govtIdVerified: false,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            // Data ko Custom PostgreSQL backend mein bhejo!
+            return fetch(`${BACKEND_URL}/api/users/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    id: cred.user.uid,
+                    name: name,
+                    email: email,
+                    country: country,
+                    user_type: selectedType
+                })
+            }).then(res => {
+                if(!res.ok) throw new Error("Database provisioning failed");
+                // Frontend profile rendering fast rakhne ke liye Firebase me bhi save kar do
+                return db.collection('users').doc(cred.user.uid).set({
+                    name: name, email: email, country: country, userType: selectedType,
+                    govtIdVerified: false,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
             });
         }).then(() => {
             closeModal('authModal');
-            showToast('✅ Account Created!');
-        }).catch(e => showToast('❌ ' + e.message));
+            showToast('✅ Enterprise Account Provisioned!');
+        }).catch(e => showToast('❌ ' + e.message)).finally(() => {
+            btn.textContent = originalText; btn.disabled = false;
+        });
     } else {
         auth.signInWithEmailAndPassword(email, pass).then(() => {
-            closeModal('authModal'); showToast('✅ Login Successful!');
-        }).catch(e => showToast('❌ Invalid Credentials'));
+            closeModal('authModal'); showToast('✅ Secure Login Successful!');
+        }).catch(e => showToast('❌ Invalid Credentials')).finally(() => {
+            btn.textContent = originalText; btn.disabled = false;
+        });
     }
 }
 
@@ -153,7 +183,7 @@ function renderProfile() {
     `;
 }
 
-// ===== 7. MARKET FEED & DEMANDS =====
+// ===== 7. MARKET FEED & DEMANDS (Runs on Firebase for now) =====
 function loadListings() {
     db.collection('listings').orderBy('createdAt','desc').onSnapshot(snap => {
         allListings = snap.docs.map(d => Object.assign({id: d.id}, d.data()));
@@ -230,7 +260,7 @@ function submitPost() {
     });
 }
 
-// ===== 8. CONTRACT & ESCROW LOGIC (REAL-TIME) =====
+// ===== 8. CONTRACT & ESCROW LOGIC (Connected to Custom Render Backend) =====
 function openContractModal() {
     if(!currentUserData || currentUserData.userType !== 'expert') {
         showToast("⚠️ Access Denied: Only verified Experts can draft contracts.");
@@ -254,26 +284,32 @@ function createContract() {
     btn.innerHTML = '<span class="spinner"></span> Locking...';
     btn.disabled = true;
 
-    const contractId = 'MNG-' + Math.floor(Math.random() * 90000 + 10000);
-
-    db.collection('contracts').add({
-        contractId: contractId,
-        buyerRef: buyer,
-        farmerRef: farmer,
-        expertId: currentUser.uid,
-        expertName: currentUserData.name || 'Expert',
-        cropDetails: crop,
-        escrowAmount: amount,
-        status: 'Escrow Locked 🔒',
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    }).then(() => {
+    // Direct POST request to your new custom backend
+    fetch(`${BACKEND_URL}/api/contracts/create`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            buyer_ref: buyer,
+            farmer_ref: farmer,
+            expert_id: currentUser.uid,
+            expert_name: currentUserData.name || 'Expert',
+            crop_details: crop,
+            escrow_amount: amount
+        })
+    }).then(res => res.json())
+    .then(data => {
+        if(data.error) throw new Error(data.error);
+        
         closeModal('contractModal');
-        showToast("✅ Contract Drafted & Escrow Locked!");
+        showToast("✅ Contract Locked in PostgreSQL!");
         
         document.getElementById('contractBuyer').value = '';
         document.getElementById('contractFarmer').value = '';
         document.getElementById('contractCrop').value = '';
         document.getElementById('contractAmount').value = '';
+        
+        // Refresh API data
+        loadContracts();
     }).catch(e => {
         showToast("❌ Error: " + e.message);
     }).finally(() => {
@@ -285,20 +321,23 @@ function createContract() {
 function loadContracts() {
     if(!currentUser) return;
     const container = document.getElementById('contractsContainer');
-    container.innerHTML = '<div class="empty-state"><span class="spinner"></span><p>Syncing secure ledger...</p></div>';
+    container.innerHTML = '<div class="empty-state"><span class="spinner"></span><p>Syncing secure PostgreSQL ledger...</p></div>';
 
-    db.collection('contracts').orderBy('createdAt', 'desc').onSnapshot((snap) => {
+    // Direct GET request to your custom backend
+    fetch(`${BACKEND_URL}/api/contracts`)
+    .then(res => res.json())
+    .then(data => {
         let expertBtn = '';
         if(currentUserData && currentUserData.userType === 'expert') {
             expertBtn = '<button class="post-btn" style="margin-bottom:16px; width:100%;" onclick="openContractModal()">+ Draft New Contract</button>';
         }
 
-        if(snap.empty) {
+        if(!data || data.length === 0) {
             container.innerHTML = `
                 ${expertBtn}
                 <div class="empty-state">
                     <div style="font-size: 48px; margin-bottom: 12px;">🔐</div>
-                    <p>No active contracts found in the system.</p>
+                    <p>No active contracts found in the secure system.</p>
                 </div>
             `;
             return;
@@ -306,34 +345,33 @@ function loadContracts() {
 
         let html = expertBtn; 
 
-        snap.docs.forEach(doc => {
-            const data = doc.data();
+        data.forEach(contract => {
             html += `
                 <div class="card" style="border-left: 4px solid var(--gold);">
-                    <div style="font-size:12px; color:var(--gray); font-weight:bold;">Contract ID: #${data.contractId}</div>
-                    <div style="font-weight:900; font-size:18px; margin-top:4px; color:var(--green);">${data.cropDetails}</div>
+                    <div style="font-size:12px; color:var(--gray); font-weight:bold;">Contract ID: #${contract.contract_id}</div>
+                    <div style="font-weight:900; font-size:18px; margin-top:4px; color:var(--green);">${contract.crop_details}</div>
                     
                     <div style="margin-top:12px; display:flex; justify-content:space-between; align-items:center;">
                         <span style="background:#e8f5ee; color:var(--green); padding:6px 10px; border-radius:8px; font-size:12px; font-weight:800; border: 1px solid var(--green2);">
-                            ${data.status}
+                            ${contract.status}
                         </span>
                         <span style="font-weight:900; color:var(--green2); font-size:18px;">
-                            ₹${data.escrowAmount}
+                            ₹${contract.escrow_amount}
                         </span>
                     </div>
                     
                     <div style="margin-top:16px; font-size:13px; color:var(--text); background: var(--bg); padding: 12px; border-radius: 12px;">
-                        <div style="margin-bottom:4px;">👨‍🏫 <strong>Expert:</strong> ${data.expertName}</div>
-                        <div style="margin-bottom:4px;">🛒 <strong>Buyer:</strong> ${data.buyerRef}</div>
-                        <div>🌾 <strong>Farmer:</strong> ${data.farmerRef}</div>
+                        <div style="margin-bottom:4px;">👨‍🏫 <strong>Expert:</strong> ${contract.expert_name}</div>
+                        <div style="margin-bottom:4px;">🛒 <strong>Buyer:</strong> ${contract.buyer_ref}</div>
+                        <div>🌾 <strong>Farmer:</strong> ${contract.farmer_ref}</div>
                     </div>
                 </div>
             `;
         });
         
         container.innerHTML = html;
-    }, (error) => {
-        console.error("Error fetching contracts:", error);
-        container.innerHTML = '<div class="empty-state"><p>Error connecting to secure ledger.</p></div>';
+    }).catch(error => {
+        console.error("Error fetching contracts from Backend:", error);
+        container.innerHTML = '<div class="empty-state"><p>Error connecting to Enterprise API.</p></div>';
     });
 }
