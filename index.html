@@ -6,6 +6,7 @@
 <title>Maango — Demand First Marketplace</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Hind:wght@400;500;600;700&display=swap" rel="stylesheet">
 
+<!-- Firebase SDKs -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
@@ -16,17 +17,19 @@
 
 <div class="toast" id="toast"></div>
 
+<!-- TOP NAVBAR -->
 <nav>
   <div class="logo">maan<span>go</span></div>
   <div class="nav-right" style="display:flex; gap:12px; align-items:center;">
     <select id="langToggle" onchange="switchLanguage(this.value)" style="background:#f5f0e8; border:none; padding:6px 12px; border-radius:20px; font-size:13px; font-weight:700; outline:none; cursor:pointer; color:var(--green);">
-        <option value="en">🇬🇧 EN</option>
-        <option value="hi">🇮🇳 HI</option>
+      <option value="en">🇬🇧 EN</option>
+      <option value="hi">🇮🇳 HI</option>
     </select>
     <button class="btn-nav" id="navAuthBtn" onclick="handleNavBtn()" data-i18n="loginBtn">👤 Login</button>
   </div>
 </nav>
 
+<!-- HERO SEARCH -->
 <div class="search-section">
   <h2 data-i18n="heroTitle">What do you want to buy?</h2>
   <p data-i18n="heroSub">In bulk — Direct from verified farmers</p>
@@ -37,6 +40,7 @@
   </div>
 </div>
 
+<!-- TABS -->
 <div class="tabs">
   <div class="tab active" onclick="switchTab(this);showPage('home')" data-i18n="tabFeed">📱 Feed</div>
   <div class="tab" onclick="switchTab(this);showPage('knowledge')" data-i18n="tabLearn">📚 Learn</div>
@@ -46,6 +50,7 @@
   <div class="tab" onclick="switchTab(this);showPage('chat')" data-i18n="tabChats">💬 Chats</div>
 </div>
 
+<!-- HOME PAGE -->
 <div class="page active" id="homePage">
   <div class="section">
     <div class="section-title" data-i18n="hotCats">🔥 Hot Categories</div>
@@ -58,10 +63,16 @@
       <div class="feed-title" data-i18n="liveDemands">📋 Market Demands</div>
       <button class="post-btn" onclick="showPostModal()" data-i18n="postDemandBtn">+ Post Demand</button>
     </div>
-    <div id="feedContainer"><div class="empty-state"><span class="spinner" style="border-top-color:var(--green)"></span><p>Loading market data...</p></div></div>
+    <div id="feedContainer">
+      <div class="empty-state">
+        <span class="spinner" style="border-top-color:var(--green)"></span>
+        <p>Loading market data...</p>
+      </div>
+    </div>
   </div>
 </div>
 
+<!-- KNOWLEDGE PAGE -->
 <div class="page" id="knowledgePage">
   <div class="feed">
     <div class="feed-header"><div class="feed-title">📚 Agriculture Guide</div></div>
@@ -74,6 +85,7 @@
   </div>
 </div>
 
+<!-- EXPERTS PAGE -->
 <div class="page" id="expertPage">
   <div class="feed">
     <div class="feed-header"><div class="feed-title">👨‍🏫 Verified Experts</div></div>
@@ -82,6 +94,7 @@
   </div>
 </div>
 
+<!-- FARMERS DIRECTORY -->
 <div class="page" id="farmerDirPage">
   <div class="feed">
     <div class="feed-header"><div class="feed-title">🌾 Verified Farmers</div></div>
@@ -90,6 +103,7 @@
   </div>
 </div>
 
+<!-- BUYERS DIRECTORY -->
 <div class="page" id="buyerDirPage">
   <div class="feed">
     <div class="feed-header"><div class="feed-title">🛒 Verified Buyers</div></div>
@@ -98,36 +112,42 @@
   </div>
 </div>
 
+<!-- CHAT PAGE -->
 <div class="page" id="chatPage">
   <div class="feed">
     <div class="feed-header"><div class="feed-title">💬 Messages</div></div>
-    <div id="chatListContainer"><div class="empty-state"><div>🔒</div><p>Login to view your conversations.</p></div></div>
+    <div id="chatListContainer">
+      <div class="empty-state"><div>🔒</div><p>Login to view your conversations.</p></div>
+    </div>
   </div>
 </div>
 
+<!-- PROFILE PAGE -->
 <div class="page" id="profilePage">
   <div class="feed" id="profileContent">
     <div class="empty-state"><div>👤</div><p>Please login securely.</p></div>
   </div>
 </div>
 
+<!-- FOOTER -->
 <div class="site-footer">
   <div class="footer-links">
     <span onclick="openLegal('help')">Help Center</span>
     <span onclick="openLegal('contact')">Contact Us</span>
-    <span onclick="openLegal('privacy')">Privacy & Terms</span>
+    <a href="legal.html" style="color:var(--gray);font-weight:600;">Privacy & Terms</a>
   </div>
   <p>© 2026 Maango. All rights reserved.</p>
-  <p style="opacity:0.6; margin-top:4px;">Built with Trust & Security in India</p>
+  <p style="opacity:0.6; margin-top:4px;">Built with Trust & Security in India 🇮🇳</p>
 </div>
 
+<!-- BOTTOM NAVIGATION -->
 <div class="bottom-nav">
   <div class="nav-item active" onclick="showPage('home')" id="navHome">
     <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
     <span data-i18n="navHome">Home</span>
   </div>
   <div class="nav-item" onclick="showPage('knowledge')" id="navKnowledge">
-    <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477-4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+    <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
     <span data-i18n="navLearn">Learn</span>
   </div>
   <div class="nav-item" onclick="showPage('chat')" id="navChat">
@@ -140,6 +160,7 @@
   </div>
 </div>
 
+<!-- AI FLOATING BUTTON -->
 <button class="ai-fab" onclick="toggleAI()">🤖</button>
 <div class="ai-box" id="aiBox">
   <div class="ai-head">
@@ -156,6 +177,7 @@
   </div>
 </div>
 
+<!-- LEGAL MODAL -->
 <div class="modal-overlay" id="legalModal">
   <div class="modal">
     <button class="close-btn" onclick="closeModal('legalModal')">✕</button>
@@ -164,6 +186,7 @@
   </div>
 </div>
 
+<!-- POST DEMAND MODAL -->
 <div class="modal-overlay" id="postModal">
   <div class="modal">
     <button class="close-btn" onclick="closeModal('postModal')">✕</button>
@@ -182,16 +205,15 @@
   </div>
 </div>
 
+<!-- AUTH MODAL -->
 <div class="modal-overlay" id="authModal">
   <div class="modal">
     <button class="close-btn" onclick="closeModal('authModal')">✕</button>
     <div class="modal-title" id="authTitle">Secure Access</div>
-    
     <div class="auth-tabs">
       <div class="auth-tab active" id="tabLogin" onclick="switchAuthMode('login')">Login</div>
       <div class="auth-tab" id="tabSignup" onclick="switchAuthMode('signup')">Create Account</div>
     </div>
-
     <div id="signupExtraFields" style="display:none; margin-top:8px;">
       <div class="type-btns" style="flex-direction:row; margin-bottom:12px;">
         <div class="type-btn selected" id="typeBuyer" onclick="selectType('buyer')">🛒 Buyer</div>
@@ -202,23 +224,21 @@
       <input type="tel" id="authMobile" placeholder="Mobile Number *">
       <input type="text" id="authCity" placeholder="City / District *">
     </div>
-
     <input type="email" id="authEmail" placeholder="Email Address *">
     <input type="password" id="authPassword" placeholder="Password (Min 6 chars) *">
-
     <button class="modal-submit" id="authMainBtn" onclick="processAuth()">Secure Login</button>
-    
     <div class="link-text" id="forgotPwdLink" style="margin-top:16px;">Forgot Password? <span onclick="resetPassword()">Reset Here</span></div>
   </div>
 </div>
+
+<!-- KYC MODAL -->
 <div class="modal-overlay" id="profileModal">
   <div class="modal">
     <button class="close-btn" onclick="closeModal('profileModal')">✕</button>
     <div class="modal-title">Identity Verification (KYC)</div>
-    <div style="background:#e8f5ee; border:1px solid var(--green2); padding:12px; border-radius:12px; margin-bottom:16px; font-size:12px; line-height:1.5; color:var(--green)">
+    <div style="background:#e8f5ee; border:1px solid var(--green2); padding:12px; border-radius:12px; font-size:12px; line-height:1.5; color:var(--green)">
       🔒 <strong>Data Security Notice:</strong> Maango uses end-to-end encryption to store your ID details. We never share documents publicly. Providing fake documents will lead to account suspension.
     </div>
-    
     <label class="form-label">Select Document Type *</label>
     <select id="govtIdType">
       <option value="">-- Choose Valid ID --</option>
@@ -227,22 +247,19 @@
       <option value="voter">Voter ID</option>
       <option value="driving">Driving License</option>
     </select>
-    
     <label class="form-label">Document ID Number *</label>
     <input type="text" id="govtIdNumber" placeholder="Enter exact ID number">
-
     <label class="form-label">Upload Document Image (Photo/PDF) *</label>
-    <input type="file" id="kycFile" accept="image/*,application/pdf" style="padding: 10px 0; color: var(--text);">
-    
+    <input type="file" id="kycFile" accept="image/*,application/pdf" style="padding:10px 0; color:var(--text);">
     <label class="form-label">Business/Farm Name (Optional)</label>
     <input type="text" id="businessName" placeholder="Official Business Name">
     <label class="form-label">State / Province / Region *</label>
-    <input type="text" id="userState" placeholder="e.g. Punjab, California, Tokyo...">
-    
+    <input type="text" id="userState" placeholder="e.g. Punjab, Maharashtra...">
     <button class="modal-submit" onclick="saveProfile()">🔐 Submit for Secure KYC</button>
   </div>
 </div>
-  
+
+<!-- FULL CHAT VIEW -->
 <div class="full-chat" id="fullChat">
   <div class="chat-nav">
     <button class="chat-back" onclick="closeFullChat()">←</button>
@@ -261,58 +278,36 @@
 
 <script src="app.js"></script>
 
+<!-- LANGUAGE SWITCHER -->
 <script>
-  const dict = {
-    en: {
-      loginBtn: "👤 Login",
-      heroTitle: "What do you want to buy?",
-      heroSub: "In bulk — Direct from verified farmers",
-      searchBtn: "Search",
-      tabFeed: "📱 Feed",
-      tabLearn: "📚 Learn",
-      tabExperts: "👨‍🌾 Experts",
-      tabFarmers: "🌾 Farmers",
-      tabBuyers: "🛒 Buyers",
-      tabChats: "💬 Chats",
-      hotCats: "🔥 Hot Categories",
-      liveDemands: "📋 Market Demands",
-      postDemandBtn: "+ Post Demand",
-      navHome: "Home",
-      navLearn: "Learn",
-      navChat: "Chat",
-      navProfile: "Profile"
-    },
-    hi: {
-      loginBtn: "👤 Login Karein",
-      heroTitle: "Aap kya kharidna chahte hain?",
-      heroSub: "Thok (Bulk) mein — Seedha verified kisano se",
-      searchBtn: "Khojein",
-      tabFeed: "📱 Feed",
-      tabLearn: "📚 Seekhein",
-      tabExperts: "👨‍🌾 Experts",
-      tabFarmers: "🌾 Kisan",
-      tabBuyers: "🛒 Kharidar",
-      tabChats: "💬 Chats",
-      hotCats: "🔥 Mashhoor Categories",
-      liveDemands: "📋 Bazaar Demands",
-      postDemandBtn: "+ Demand Daalein",
-      navHome: "Home",
-      navLearn: "Seekhein",
-      navChat: "Chat",
-      navProfile: "Profile"
-    }
-  };
-
-  function switchLanguage(lang) {
-    const elements = document.querySelectorAll('[data-i18n]');
-    elements.forEach(el => {
-      const key = el.getAttribute('data-i18n');
-      if(dict[lang] && dict[lang][key]) {
-        el.innerText = dict[lang][key];
-      }
-    });
+const dict = {
+  en: {
+    loginBtn:"👤 Login", heroTitle:"What do you want to buy?",
+    heroSub:"In bulk — Direct from verified farmers", searchBtn:"Search",
+    tabFeed:"📱 Feed", tabLearn:"📚 Learn", tabExperts:"👨‍🌾 Experts",
+    tabFarmers:"🌾 Farmers", tabBuyers:"🛒 Buyers", tabChats:"💬 Chats",
+    hotCats:"🔥 Hot Categories", liveDemands:"📋 Market Demands",
+    postDemandBtn:"+ Post Demand", navHome:"Home", navLearn:"Learn",
+    navChat:"Chat", navProfile:"Profile"
+  },
+  hi: {
+    loginBtn:"👤 Login Karein", heroTitle:"Aap kya kharidna chahte hain?",
+    heroSub:"Thok (Bulk) mein — Seedha verified kisano se", searchBtn:"Khojein",
+    tabFeed:"📱 Feed", tabLearn:"📚 Seekhein", tabExperts:"👨‍🌾 Experts",
+    tabFarmers:"🌾 Kisan", tabBuyers:"🛒 Kharidar", tabChats:"💬 Chats",
+    hotCats:"🔥 Mashhoor Categories", liveDemands:"📋 Bazaar Demands",
+    postDemandBtn:"+ Demand Daalein", navHome:"Home", navLearn:"Seekhein",
+    navChat:"Chat", navProfile:"Profile"
   }
-</script>
+};
 
+function switchLanguage(lang) {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if(dict[lang] && dict[lang][key]) el.innerText = dict[lang][key];
+  });
+}
+</script>
 </body>
 </html>
+
