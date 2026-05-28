@@ -1,40 +1,134 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Legal & Compliance | Maango</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Legal & Privacy | Maango</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Hind:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root { --green: #0F3D20; --green2: #1B8C3E; --gold: #FFB300; --bg: #F5F0E8; --border: #E8E0D0; --gray: #888; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: 'Hind', sans-serif; background: var(--bg); color: #1A1A1A; }
+  nav { background: var(--green); padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; }
+  .logo { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 900; color: #fff; text-decoration: none; }
+  .logo span { color: var(--gold); }
+  .back-btn { background: var(--gold); border: none; color: var(--green); padding: 8px 18px; border-radius: 24px; font-size: 14px; font-weight: 700; cursor: pointer; text-decoration: none; display: inline-block; font-family: 'Hind', sans-serif; }
+  main { max-width: 800px; margin: 0 auto; padding: 40px 20px 80px; }
+  h1 { font-family: 'Playfair Display', serif; font-size: 32px; font-weight: 900; color: var(--green); margin-bottom: 8px; }
+  .subtitle { color: var(--gray); font-size: 14px; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+  section { margin-bottom: 32px; }
+  h2 { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--green); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  p { color: #555; line-height: 1.8; font-size: 14px; margin-bottom: 12px; }
+  .info-box { background: #e8f5ee; border: 1px solid #1B8C3E40; border-radius: 12px; padding: 16px; margin: 20px 0; }
+  .info-box p { color: var(--green); margin: 0; font-weight: 600; }
+  ul { color: #555; line-height: 2; font-size: 14px; padding-left: 20px; margin-bottom: 12px; }
+  a { color: var(--green2); font-weight: 600; }
+  footer { text-align: center; padding: 24px; background: var(--green); color: rgba(255,255,255,0.7); font-size: 12px; }
+</style>
 </head>
-<body class="bg-gray-50 text-gray-800 font-sans">
+<body>
 
-    <nav class="bg-white shadow-sm py-4 px-6 flex justify-between items-center border-b border-gray-100">
-        <a href="index.html" class="text-2xl font-bold text-green-600 tracking-wide">Maango<span class="text-amber-500">.in</span></a>
-        <a href="index.html" class="text-sm font-medium text-gray-600 hover:text-green-600 transition">Back to Home</a>
-    </nav>
+<nav>
+  <a href="index.html" class="logo">maan<span>go</span></a>
+  <a href="index.html" class="back-btn">← Back to Home</a>
+</nav>
 
-    <main class="max-w-4xl mx-auto px-4 py-12">
-        <h1 class="text-3xl font-extrabold text-gray-900 mb-8 border-b pb-4">Privacy Policy & Terms of Service</h1>
-        
-        <section class="mb-8">
-            <h2 class="text-xl font-bold text-gray-800 mb-3">1. Information We Secure</h2>
-            <p class="text-gray-600 leading-relaxed mb-4">At Maango, we secure contract metadata, user registration parameters, and verified KYC documents. All digital assets are safely locked inside our secure vault system powered by Supabase and Firebase Enterprise infrastructure.</p>
-        </section>
+<main>
+  <h1>Privacy Policy & Terms of Service</h1>
+  <p class="subtitle">Last Updated: January 2026 · Maango Agri-Tech Pvt. Ltd., Aligarh, Uttar Pradesh, India</p>
 
-        <section class="mb-8">
-            <h2 class="text-xl font-bold text-gray-800 mb-3">2. Escrow & Smart Contracts</h2>
-            <p class="text-gray-600 leading-relaxed mb-4">Contracts drafted on this platform represent binding digital agreements. The escrow logic dictates that funds or milestones remain locked until verified by an independent registered Expert in the system.</p>
-        </section>
+  <div class="info-box">
+    <p>🔒 Maango is committed to your privacy and data security. We use enterprise-grade encryption to protect all user data.</p>
+  </div>
 
-        <section class="mb-8">
-            <h2 class="text-xl font-bold text-gray-800 mb-3">3. Document Verification (KYC)</h2>
-            <p class="text-gray-600 leading-relaxed">User KYC uploads are directly transmitted securely via Base64 buffers to encrypted storage buckets. These documents are strictly accessed for multi-party transaction verification between buyers, farmers, and experts.</p>
-        </section>
-    </main>
+  <section>
+    <h2>1. Information We Collect</h2>
+    <p>We collect the following information to provide secure marketplace services:</p>
+    <ul>
+      <li>Registration data: Name, email, mobile number, city/district</li>
+      <li>KYC documents: Aadhaar, PAN, Voter ID, or Driving License numbers</li>
+      <li>Business/farm details provided voluntarily</li>
+      <li>Transaction and communication metadata</li>
+      <li>Usage data to improve platform experience</li>
+    </ul>
+  </section>
 
-    <footer class="bg-white border-t py-6 text-center text-xs text-gray-400">
-        &copy; 2026 Maango.in. Secured via GitHub + Render Enterprise Sync.
-    </footer>
+  <section>
+    <h2>2. How We Use Your Data</h2>
+    <p>Your data is used exclusively for:</p>
+    <ul>
+      <li>Identity verification and fraud prevention</li>
+      <li>Connecting buyers with verified farmers and experts</li>
+      <li>Enabling encrypted peer-to-peer communication</li>
+      <li>Sending service notifications and security alerts</li>
+      <li>Improving AI-powered farming recommendations</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>3. KYC Document Security</h2>
+    <p>All KYC documents uploaded on Maango are:</p>
+    <ul>
+      <li>Transmitted via TLS 1.3 encrypted connections</li>
+      <li>Stored in access-controlled cloud storage buckets</li>
+      <li>Never shared publicly or sold to third parties</li>
+      <li>Accessible only by authorized Maango compliance staff</li>
+      <li>Subject to deletion on verified account closure request</li>
+    </ul>
+    <p><strong>Submitting fake or fraudulent documents will result in immediate permanent account suspension and may be reported to relevant authorities.</strong></p>
+  </section>
+
+  <section>
+    <h2>4. Escrow & Smart Contracts</h2>
+    <p>Contracts drafted on this platform represent binding digital agreements between registered parties. The escrow system ensures:</p>
+    <ul>
+      <li>Funds or milestones remain locked until verified by a registered Expert</li>
+      <li>All contract metadata is stored immutably in our secure database</li>
+      <li>Disputes are mediated by our verified Expert network</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>5. Data Retention</h2>
+    <p>We retain your data for as long as your account is active or as required by Indian law (typically 7 years for financial records). You may request data deletion by contacting us at <a href="mailto:privacy@maango.in">privacy@maango.in</a>.</p>
+  </section>
+
+  <section>
+    <h2>6. User Responsibilities</h2>
+    <p>By using Maango, you agree to:</p>
+    <ul>
+      <li>Provide accurate and truthful information</li>
+      <li>Not use the platform for fraudulent or illegal activities</li>
+      <li>Maintain the confidentiality of your account credentials</li>
+      <li>Report suspicious activity to <a href="mailto:support@maango.in">support@maango.in</a></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>7. Third-Party Services</h2>
+    <p>Maango uses the following third-party services, each governed by their own privacy policies:</p>
+    <ul>
+      <li><strong>Google Firebase</strong> — Authentication and real-time database</li>
+      <li><strong>Supabase</strong> — PostgreSQL database and secure file storage</li>
+      <li><strong>Google Gemini AI</strong> — Agricultural knowledge and AI chat features</li>
+      <li><strong>Google Fonts</strong> — Typography rendering</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>8. Contact Us</h2>
+    <p>For any privacy concerns, data requests, or legal inquiries:</p>
+    <ul>
+      <li>Email: <a href="mailto:privacy@maango.in">privacy@maango.in</a></li>
+      <li>Support: <a href="mailto:support@maango.in">support@maango.in</a></li>
+      <li>Address: Maango,India</li>
+    </ul>
+  </section>
+</main>
+
+<footer>
+  <p>© 2026 Maango All rights reserved. · Built with 💚 in India</p>
+</footer>
 
 </body>
 </html>
